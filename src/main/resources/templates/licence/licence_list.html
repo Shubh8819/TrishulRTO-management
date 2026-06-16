@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${pageTitle}">Licence Management System</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" th:href="@{/css/licence-management.css}">
+</head>
+<body class="lm-body lm-reset">
+
+<div class="lm-container">
+  <!-- Header -->
+  <div class="lm-header">
+    <div class="lm-title-section">
+      <h1><i class="fas fa-id-card"></i> Licence Management System</h1>
+      <p>Complete tracking & analytics for driving licences</p>
+    </div>
+    <a th:href="@{/licence/new}" class="lm-btn lm-btn--primary">
+      <i class="fas fa-plus"></i> Register New Licence
+    </a>
+  </div>
+
+  <!-- Statistics Grid -->
+  <div class="lm-grid lm-grid-cols-6">
+    <div class="lm-stat-card lm-stat-card--primary">
+      <div class="lm-stat-header">
+        <span class="lm-stat-title">Total Licences</span>
+        <i class="fas fa-id-card lm-stat-icon"></i>
+      </div>
+      <div class="lm-stat-value" th:text="${totalLicences}">0</div>
+      <div class="lm-stat-subtitle">Active registrations</div>
+      <div class="lm-stat-trend">
+        <i class="fas fa-chart-line lm-trend-up"></i>
+        <span>+12% this month</span>
+      </div>
+    </div>
+
+    <div class="lm-stat-card lm-stat-card--warning">
+      <div class="lm-stat-header">
+        <span class="lm-stat-title">Licences > 30 Days</span>
+        <i class="fas fa-hourglass-half lm-stat-icon"></i>
+      </div>
+      <div class="lm-stat-value" th:text="${licencesOver30Days}">0</div>
+      <div class="lm-stat-subtitle">Pending for driving licence</div>
+    </div>
+
+    <div class="lm-stat-card lm-stat-card--danger">
+      <div class="lm-stat-header">
+        <span class="lm-stat-title">Total Due Amount</span>
+        <i class="fas fa-rupee-sign lm-stat-icon"></i>
+      </div>
+      <div class="lm-stat-value" th:text="'₹' + ${totalDueAmountInstring}" th:title="${totalDueAmount}">₹0</div>
+      <div class="lm-stat-subtitle">Outstanding payments</div>
+    </div>
+
+
+
+    <div class="lm-stat-card lm-stat-card--info">
+      <div class="lm-stat-header">
+        <span class="lm-stat-title">Avg Due Amount</span>
+        <i class="fas fa-chart-line lm-stat-icon"></i>
+      </div>
+      <div class="lm-stat-value" th:text="'₹' + ${avgDueAmount}">₹0</div>
+      <div class="lm-stat-subtitle">Per pending licence</div>
+    </div>
+
+
+  </div>
+
+  <!-- Alerts -->
+  <div th:if="${message}" class="lm-alert lm-alert--success">
+    <i class="fas fa-check-circle"></i>
+    <span th:text="${message}"></span>
+  </div>
+
+  <!-- Search Section -->
+  <div class="lm-container">
+  <div class="lm-search-wrapper lm-mb-3">
+    <i class="fas fa-search lm-search-icon"></i>
+    <label for="searchInput"></label><input type="text" id="searchInput" class="lm-input lm-input--search"
+                                            placeholder="Search by customer name, licence number or mobile number..." >
+  </div>
+
+
+  <!-- Table -->
+  <div class="lm-table-wrapper">
+    <table class="lm-table">
+      <thead>
+      <tr>
+        <th onclick="sortTable('liId')">ID <i class="fas fa-sort"></i></th>
+        <th onclick="sortTable('customerName')">Customer <i class="fas fa-sort"></i></th>
+        <th>Father's Name</th>
+        <th>Learning Licence No</th>
+        <th>Driving Licence No</th>
+        <th>Mobile Number</th>
+        <th onclick="sortTable('vehicleType')">Vehicle <i class="fas fa-sort"></i></th>
+        <th onclick="sortTable('totalAmount')">Total Amount <i class="fas fa-sort"></i></th>
+        <th onclick="sortTable('dueAmount')">Due Amount <i class="fas fa-sort"></i></th>
+        <th>Apply Date</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="licence , stat : ${licences}">
+        <td th:text="${stat.index + 1}">1</td>
+        <td><strong th:text="${licence.customerName}">John Doe</strong></td>
+        <td th:text="${licence.father}">Robert Doe</td>
+        <td><code th:text="${licence.leaningLinceNo}">L123456</code></td>
+        <td><code th:text="${licence.divingLincence} ?: '-'">D123456</code></td>
+        <td th:text="${licence.mobNumber}">9876543210</td>
+        <td th:text="${licence.vehicleType}">2 Wheeler</td>
+        <td><strong>₹<span th:text="${licence.totalAmount}">5000</span></strong></td>
+        <td>
+                        <span th:if="${licence.dueAmount == 0}" style="color: #28a745;">
+                            <i class="fas fa-check-circle"></i> ₹0
+                        </span>
+          <span th:if="${licence.dueAmount > 0}" style="color: #dc3545;">
+                            ₹<span th:text="${licence.dueAmount}">2000</span>
+                        </span>
+        </td>
+
+        <td th:text="${licence.applydate} ?: '-'">2024-01-01</td>
+
+        <td class="lm-d-flex lm-gap-1">
+          <a th:href="@{/licence/edit/{id}(id=${licence.liId})}" class="lm-btn lm-btn--info lm-btn--sm">
+            <i class="fas fa-edit"></i> Edit
+          </a>
+          <a href="#" th:data-id="${licence.liId}" class="lm-btn lm-btn--danger lm-btn--sm" onclick="confirmDelete(this)">
+            <i class="fas fa-trash"></i> Delete
+          </a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="lm-d-flex lm-justify-between lm-align-center lm-mt-4" th:if="${totalPages > 0}">
+    <div class="lm-text-muted">
+      <i class="fas fa-info-circle"></i>
+      Showing page <span th:text="${currentPage + 1}">1</span> of <span th:text="${totalPages}">1</span>
+      | Total <span th:text="${totalItems}">0</span> records
+    </div>
+
+    <ul class="lm-pagination">
+      <li class="lm-pagination-item" th:classappend="${currentPage == 0} ? 'lm-pagination-item--disabled' : ''">
+        <a class="lm-pagination-link" th:href="@{/licence/list(page=0,size=${pageSize})}">
+          <i class="fas fa-angle-double-left"></i>
+        </a>
+      </li>
+      <li class="lm-pagination-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+          th:if="${pageNum >= currentPage - 2 and pageNum <= currentPage + 2}"
+          th:classappend="${pageNum == currentPage} ? 'lm-pagination-item--active' : ''">
+        <a class="lm-pagination-link" th:href="@{/licence/list(page=${pageNum},size=${pageSize})}"
+           th:text="${pageNum + 1}">1</a>
+      </li>
+      <li class="lm-pagination-item" th:classappend="${currentPage == totalPages - 1} ? 'lm-pagination-item--disabled' : ''">
+        <a class="lm-pagination-link" th:href="@{/licence/list(page=${currentPage + 1},size=${pageSize})}">
+          <i class="fas fa-angle-double-right"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  function confirmDelete(element) {
+      let licenceId = element.getAttribute("data-id");
+      if (confirm("Are you sure you want to delete this licence record?")) {
+          let form = document.getElementById("deleteForm");
+          form.action = "/licence/delete/" + licenceId;
+          form.submit();
+      }
+  }
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    let timer;
+    const searchInput = document.getElementById("searchInput");
+
+    searchInput.addEventListener("keyup", function () {
+
+        clearTimeout(timer);
+
+        const searchValue = this.value.trim();
+
+        timer = setTimeout(() => {
+            window.location.href =
+                "/licence/list?search=" + encodeURIComponent(searchValue);
+        }, 500);
+    });
+
+});
+
+</script>
+
+</body>
+</html>
