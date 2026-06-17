@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+
+<!-- ========== SIDEBAR FRAGMENT ========== -->
+<div th:fragment="sidebar" class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <a href="/" class="logo">
+      <i class="fas fa-id-card"></i>
+      <div>
+        <span>LicencePro</span>
+        <span class="sub">Internal Management System</span>
+      </div>
+    </a>
+    <div class="company-badge">
+      <i class="fas fa-building"></i> Company Portal
+    </div>
+  </div>
+
+  <nav class="sidebar-menu">
+    <div class="menu-label">Main Menu</div>
+
+    <a href="/" th:classappend="${activePage == 'dashboard'} ? 'active' : ''">
+      <i class="fas fa-th-large"></i> Dashboard
+    </a>
+    <a href="/licence/list" th:classappend="${activePage == 'licences'} ? 'active' : ''">
+      <i class="fas fa-id-card"></i> All Licences
+      <span class="badge" th:text="${licenceCount}">0</span>
+    </a>
+    <a href="/licence/new" th:classappend="${activePage == 'newLicence'} ? 'active' : ''">
+      <i class="fas fa-plus-circle"></i> New Licence
+    </a>
+    <a href="#" th:classappend="${activePage == 'customers'} ? 'active' : ''">
+      <i class="fas fa-users"></i> Customers
+      <span class="badge" th:text="${customerCount}">0</span>
+    </a>
+
+    <div class="menu-label" style="margin-top: 20px;">Services</div>
+
+    <a href="/licence/list" th:classappend="${activePage == 'licences'} ? 'active' : ''">
+      <i class="fas fa-id-card"></i> Licence Services
+      <span class="badge" th:text="${licenceCount}">0</span>
+    </a>
+    <a href="vehicle-transfer/list" th:classappend="${activePage == 'transfer'} ? 'active' : ''">
+      <i class="fas fa-exchange-alt"></i> Vehicle Transfer
+      <span class="badge" th:text="${transferCount}">0</span>
+    </a>
+    <a href="#" th:classappend="${activePage == 'insurance'} ? 'active' : ''">
+      <i class="fas fa-shield-alt"></i> Insurance
+      <span class="badge" th:text="${insuranceCount}">0</span>
+    </a>
+    <a href="#" th:classappend="${activePage == 'puc'} ? 'active' : ''">
+      <i class="fas fa-leaf"></i> PUC Services
+      <span class="badge" th:text="${pucCount}">0</span>
+    </a>
+
+    <div class="menu-label" style="margin-top: 20px;">Management</div>
+
+    <a href="#" th:classappend="${activePage == 'reports'} ? 'active' : ''">
+      <i class="fas fa-file-invoice"></i> Reports
+    </a>
+    <a href="#" th:classappend="${activePage == 'employees'} ? 'active' : ''">
+      <i class="fas fa-user-tie"></i> Employees
+    </a>
+    <a href="#" th:classappend="${activePage == 'settings'} ? 'active' : ''">
+      <i class="fas fa-cog"></i> Settings
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="avatar">AK</div>
+      <div>
+        <div class="user-name">Admin User</div>
+        <div class="user-role">System Administrator</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SIDEBAR STYLES FRAGMENT ========== -->
+<th:block th:fragment="sidebar-styles">
+  <style>
+    .sidebar {
+        width: 280px;
+        background: var(--bg-dark);
+        min-height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 1000;
+        transition: all 0.3s ease;
+        overflow-y: auto;
+    }
+
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+
+    .sidebar-brand {
+        padding: 24px 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .sidebar-brand .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+    }
+
+    .sidebar-brand .logo i {
+        font-size: 32px;
+        color: var(--secondary);
+    }
+
+    .sidebar-brand .logo span {
+        font-size: 22px;
+        font-weight: 800;
+        color: #ffffff;
+    }
+
+    .sidebar-brand .logo .sub {
+        font-size: 10px;
+        color: rgba(255,255,255,0.4);
+        font-weight: 400;
+        display: block;
+        margin-top: 2px;
+    }
+
+    .sidebar-brand .company-badge {
+        display: inline-block;
+        padding: 4px 14px;
+        background: rgba(245,158,11,0.15);
+        color: var(--secondary);
+        border-radius: 50px;
+        font-size: 10px;
+        font-weight: 600;
+        margin-top: 10px;
+        border: 1px solid rgba(245,158,11,0.1);
+    }
+
+    .sidebar-menu {
+        padding: 20px 12px;
+    }
+
+    .sidebar-menu .menu-label {
+        font-size: 10px;
+        font-weight: 700;
+        color: rgba(255,255,255,0.25);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        padding: 0 12px;
+        margin-bottom: 12px;
+    }
+
+    .sidebar-menu a {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 12px 16px;
+        color: rgba(255,255,255,0.6);
+        text-decoration: none;
+        border-radius: var(--radius-sm);
+        transition: all 0.3s ease;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 4px;
+        position: relative;
+    }
+
+    .sidebar-menu a::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 0;
+        background: var(--secondary);
+        border-radius: 0 4px 4px 0;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar-menu a:hover::before,
+    .sidebar-menu a.active::before {
+        height: 24px;
+    }
+
+    .sidebar-menu a:hover {
+        background: rgba(255,255,255,0.06);
+        color: #ffffff;
+    }
+
+    .sidebar-menu a.active {
+        background: rgba(255,255,255,0.06);
+        color: #ffffff;
+    }
+
+    .sidebar-menu a.active i {
+        color: var(--secondary);
+    }
+
+    .sidebar-menu a i {
+        width: 20px;
+        font-size: 16px;
+    }
+
+    .sidebar-menu a .badge {
+        margin-left: auto;
+        padding: 2px 10px;
+        background: var(--secondary);
+        color: #ffffff;
+        border-radius: 50px;
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+    .sidebar-footer {
+        padding: 20px 24px;
+        border-top: 1px solid rgba(255,255,255,0.06);
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+    }
+
+    .sidebar-footer .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .sidebar-footer .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--secondary), #ff9100);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    .sidebar-footer .user-name {
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .sidebar-footer .user-role {
+        color: rgba(255,255,255,0.4);
+        font-size: 12px;
+    }
+
+    @media (max-width: 1024px) {
+        .sidebar {
+            transform: translateX(-100%);
+            width: 280px;
+        }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+    }
+  </style>
+</th:block>
+
+</body>
+</html>

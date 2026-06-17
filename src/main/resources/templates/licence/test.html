@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" lang="eng">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 10px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-submit {
+            background: #4CAF50;
+        }
+
+        .btn-cancel {
+            background: #f44336;
+        }
+
+        .message {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            text-align: center;
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1 th:text="${pageTitle}">Licence Form</h1>
+
+    <div th:if="${message}" class="message"
+         th:text="${message}">
+    </div>
+
+    <form th:action="${licence.liId == null}
+                     ? @{/licence/save}
+                     : @{/licence/update/{id}(id=${licence.liId})}"
+          method="post">
+
+        <div class="form-group">
+            <label>Customer Name *</label>
+            <label>
+                <input type="text"
+                       name="customerName"
+                       th:value="${licence.customerName}"
+                       required>
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label>Father's Name *</label>
+            <label>
+                <input type="text"
+                       name="father"
+                       th:value="${licence.father}"
+                       required>
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label>Learning Licence Number *</label>
+            <label>
+                <input type="text"
+                       name="leaningLinceNo"
+                       th:value="${licence.leaningLinceNo}"
+                       required>
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label>Driving Licence Number</label>
+            <label>
+                <input type="text"
+                       name="divingLincence"
+                       th:value="${licence.divingLincence}">
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label>Mobile Number *</label>
+            <label>
+                <input type="tel"
+                       name="mobNumber"
+                       th:value="${licence.mobNumber}"
+                       pattern="[0-9]{10}"
+                       required>
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label>Vehicle Type *</label>
+
+            <label>
+                <select name="vehicleType" required>
+
+                    <option value="">Select Vehicle Type</option>
+
+                    <option value="2 Wheeler"
+                            th:selected="${licence.vehicleType == '2 Wheeler'}">
+                        2 Wheeler
+                    </option>
+
+                    <option value="3 Wheeler"
+                            th:selected="${licence.vehicleType == '3 Wheeler'}">
+                        3 Wheeler
+                    </option>
+
+                    <option value="4 Wheeler"
+                            th:selected="${licence.vehicleType == '4 Wheeler'}">
+                        4 Wheeler
+                    </option>
+
+                    <option value="Heavy Vehicle"
+                            th:selected="${licence.vehicleType == 'Heavy Vehicle'}">
+                        Heavy Vehicle
+                    </option>
+
+                </select>
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label>Total Amount (₹)</label>
+            <label>
+                <input type="number"
+                       name="totalAmount"
+                       th:value="${licence.totalAmount}">
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label>Due Amount (₹)</label>
+            <label>
+                <input type="number"
+                       name="dueAmount"
+                       th:value="${licence.dueAmount}">
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label>Apply Date</label>
+            <label>
+                <input type="date"
+                       name="applydate"
+                       th:value="${licence.applydate}">
+            </label>
+        </div>
+
+        <div class="form-buttons">
+
+            <button type="submit" class="btn btn-submit"
+                    th:text="${licence.liId == null ? 'Save Licence' : 'Update Licence'}">
+                Save Licence
+            </button>
+
+            <a th:href="@{/licence/list}" class="btn btn-cancel">
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+
+</html>

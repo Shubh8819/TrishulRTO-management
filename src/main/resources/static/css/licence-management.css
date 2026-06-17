@@ -1,0 +1,511 @@
+/* ============================================
+   LICENCE MANAGEMENT SYSTEM - MAIN STYLES
+   Version: 1.0.0
+   Author: System
+   ============================================ */
+
+/* ========== 1. CSS VARIABLES (THEME) ========== */
+:root {
+    /* Colors */
+    --lm-primary: #667eea;
+    --lm-primary-dark: #5a67d8;
+    --lm-primary-light: #7f9cf5;
+    --lm-secondary: #764ba2;
+    --lm-success: #28a745;
+    --lm-danger: #dc3545;
+    --lm-warning: #ffc107;
+    --lm-info: #17a2b8;
+    --lm-dark: #343a40;
+    --lm-light: #f8f9fa;
+    --lm-white: #ffffff;
+    --lm-gray: #6c757d;
+    --lm-gray-light: #e9ecef;
+
+    /* Spacing */
+    --lm-spacing-xs: 4px;
+    --lm-spacing-sm: 8px;
+    --lm-spacing-md: 16px;
+    --lm-spacing-lg: 24px;
+    --lm-spacing-xl: 32px;
+    --lm-spacing-2xl: 48px;
+
+    /* Border Radius */
+    --lm-radius-sm: 4px;
+    --lm-radius-md: 8px;
+    --lm-radius-lg: 12px;
+    --lm-radius-xl: 16px;
+    --lm-radius-2xl: 20px;
+
+    /* Shadows */
+    --lm-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --lm-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --lm-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --lm-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+    /* Transitions */
+    --lm-transition-fast: 150ms ease;
+    --lm-transition-base: 250ms ease;
+    --lm-transition-slow: 350ms ease;
+
+    /* Z-Index */
+    --lm-z-dropdown: 1000;
+    --lm-z-modal: 1050;
+    --lm-z-tooltip: 1060;
+}
+
+/* ========== 2. GLOBAL RESET ========== */
+.lm-reset {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.lm-body {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, var(--lm-primary) 0%, var(--lm-secondary) 100%);
+    min-height: 100vh;
+    padding: var(--lm-spacing-lg);
+}
+
+/* ========== 3. LAYOUT COMPONENTS ========== */
+.lm-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    background: var(--lm-white);
+    border-radius: var(--lm-radius-2xl);
+    padding: var(--lm-spacing-xl);
+    box-shadow: var(--lm-shadow-xl);
+    animation: lm-fade-in 0.5s ease-in;
+}
+
+.lm-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--lm-spacing-xl);
+    flex-wrap: wrap;
+    gap: var(--lm-spacing-lg);
+}
+
+.lm-title-section h1 {
+    color: var(--lm-dark);
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: var(--lm-spacing-xs);
+}
+
+.lm-title-section p {
+    color: var(--lm-gray);
+    font-size: 14px;
+}
+
+/* ========== 4. GRID SYSTEM ========== */
+.lm-grid {
+    display: grid;
+    gap: var(--lm-spacing-lg);
+}
+
+.lm-grid-cols-1 { grid-template-columns: repeat(1, 1fr); }
+.lm-grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.lm-grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.lm-grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+.lm-grid-cols-5 { grid-template-columns: repeat(5, 1fr); }
+.lm-grid-cols-6 { grid-template-columns: repeat(6, 1fr); }
+
+@media (max-width: 768px) {
+    .lm-grid-cols-2,
+    .lm-grid-cols-3,
+    .lm-grid-cols-4,
+    .lm-grid-cols-5,
+    .lm-grid-cols-6 {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+/* ========== 5. STATISTICS CARDS ========== */
+.lm-stat-card {
+    background: var(--lm-white);
+    border-radius: var(--lm-radius-lg);
+    padding: var(--lm-spacing-lg);
+    box-shadow: var(--lm-shadow-md);
+    transition: transform var(--lm-transition-base);
+    border-left: 4px solid;
+    position: relative;
+    overflow: hidden;
+}
+
+.lm-stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--lm-shadow-lg);
+}
+
+.lm-stat-card--primary { border-left-color: var(--lm-primary); }
+.lm-stat-card--success { border-left-color: var(--lm-success); }
+.lm-stat-card--warning { border-left-color: var(--lm-warning); }
+.lm-stat-card--danger { border-left-color: var(--lm-danger); }
+.lm-stat-card--info { border-left-color: var(--lm-info); }
+.lm-stat-card--dark { border-left-color: var(--lm-dark); }
+
+.lm-stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--lm-spacing-md);
+}
+
+.lm-stat-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--lm-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.lm-stat-icon {
+    font-size: 32px;
+    opacity: 0.8;
+}
+
+.lm-stat-card--primary .lm-stat-icon { color: var(--lm-primary); }
+.lm-stat-card--success .lm-stat-icon { color: var(--lm-success); }
+.lm-stat-card--warning .lm-stat-icon { color: var(--lm-warning); }
+.lm-stat-card--danger .lm-stat-icon { color: var(--lm-danger); }
+.lm-stat-card--info .lm-stat-icon { color: var(--lm-info); }
+
+.lm-stat-value {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--lm-dark);
+    margin-bottom: var(--lm-spacing-xs);
+}
+
+.lm-stat-subtitle {
+    font-size: 12px;
+    color: var(--lm-gray-light);
+    margin-top: var(--lm-spacing-xs);
+}
+
+.lm-stat-trend {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--lm-spacing-xs);
+    font-size: 12px;
+    margin-top: var(--lm-spacing-sm);
+    padding: var(--lm-spacing-xs) var(--lm-spacing-sm);
+    border-radius: var(--lm-radius-xl);
+    background: var(--lm-light);
+}
+
+.lm-trend-up { color: var(--lm-success); }
+.lm-trend-down { color: var(--lm-danger); }
+
+/* ========== 6. BUTTONS ========== */
+.lm-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--lm-spacing-sm);
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--lm-radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--lm-transition-base);
+    text-decoration: none;
+}
+
+.lm-btn--primary {
+    background: linear-gradient(135deg, var(--lm-primary) 0%, var(--lm-secondary) 100%);
+    color: var(--lm-white);
+    box-shadow: var(--lm-shadow-sm);
+}
+
+.lm-btn--primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--lm-shadow-md);
+}
+
+.lm-btn--success {
+    background: var(--lm-success);
+    color: var(--lm-white);
+}
+
+.lm-btn--danger {
+    background: var(--lm-danger);
+    color: var(--lm-white);
+}
+
+.lm-btn--info {
+    background: var(--lm-info);
+    color: var(--lm-white);
+}
+
+.lm-btn--sm {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.lm-btn--lg {
+    padding: 14px 28px;
+    font-size: 16px;
+}
+
+/* ========== 7. FORM COMPONENTS ========== */
+.lm-form-group {
+    margin-bottom: var(--lm-spacing-lg);
+}
+
+.lm-label {
+    display: block;
+    margin-bottom: var(--lm-spacing-sm);
+    font-weight: 600;
+    color: var(--lm-dark);
+}
+
+.lm-input,
+.lm-select {
+    width: 100%;
+    padding: 10px var(--lm-spacing-md);
+    border: 2px solid var(--lm-gray-light);
+    border-radius: var(--lm-radius-md);
+    font-size: 14px;
+    transition: all var(--lm-transition-fast);
+}
+
+.lm-input:focus,
+.lm-select:focus {
+    outline: none;
+    border-color: var(--lm-primary);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.lm-input--search {
+   padding-left: 40px;
+}
+
+.lm-search-wrapper {
+    position: relative;
+}
+
+.lm-search-icon {
+    position: absolute;
+    left: var(--lm-spacing-md);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--lm-gray);
+}
+
+/* ========== 8. TABLE COMPONENTS ========== */
+.lm-table-wrapper {
+    overflow-x: auto;
+    border-radius: var(--lm-radius-lg);
+    border: 1px solid var(--lm-gray-light);
+}
+
+.lm-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.lm-table th {
+    background: var(--lm-light);
+    padding: var(--lm-spacing-md);
+    text-align: left;
+    font-weight: 600;
+    color: var(--lm-dark);
+    border-bottom: 2px solid var(--lm-gray-light);
+    cursor: pointer;
+    user-select: none;
+}
+
+.lm-table th:hover {
+    background: var(--lm-gray-light);
+}
+
+.lm-table td {
+    padding: var(--lm-spacing-md);
+    border-bottom: 1px solid var(--lm-gray-light);
+    color: var(--lm-gray);
+}
+
+.lm-table tr:hover {
+    background: var(--lm-light);
+}
+
+/* ========== 9. STATUS BADGES ========== */
+.lm-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--lm-spacing-xs);
+    padding: 4px 12px;
+    border-radius: var(--lm-radius-xl);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.lm-badge--success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.lm-badge--warning {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.lm-badge--danger {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.lm-badge--info {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+/* ========== 10. ALERT COMPONENTS ========== */
+.lm-alert {
+    padding: var(--lm-spacing-md) var(--lm-spacing-lg);
+    border-radius: var(--lm-radius-md);
+    margin-bottom: var(--lm-spacing-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--lm-spacing-md);
+    animation: lm-slide-down var(--lm-transition-base);
+}
+
+.lm-alert--success {
+    background: #d4edda;
+    color: #155724;
+    border-left: 4px solid var(--lm-success);
+}
+
+.lm-alert--danger {
+    background: #f8d7da;
+    color: #721c24;
+    border-left: 4px solid var(--lm-danger);
+}
+
+.lm-alert--warning {
+    background: #fff3cd;
+    color: #856404;
+    border-left: 4px solid var(--lm-warning);
+}
+
+/* ========== 11. PAGINATION ========== */
+.lm-pagination {
+    display: flex;
+    gap: var(--lm-spacing-sm);
+    flex-wrap: wrap;
+}
+
+.lm-pagination-item {
+    list-style: none;
+}
+
+.lm-pagination-link {
+    padding: var(--lm-spacing-sm) var(--lm-spacing-md);
+    border: 2px solid var(--lm-gray-light);
+    border-radius: var(--lm-radius-md);
+    text-decoration: none;
+    color: var(--lm-dark);
+    transition: all var(--lm-transition-base);
+    display: flex;
+    align-items: center;
+    gap: var(--lm-spacing-xs);
+}
+
+.lm-pagination-link:hover {
+    background: var(--lm-primary);
+    color: var(--lm-white);
+    border-color: var(--lm-primary);
+}
+
+.lm-pagination-item--active .lm-pagination-link {
+    background: linear-gradient(135deg, var(--lm-primary) 0%, var(--lm-secondary) 100%);
+    color: var(--lm-white);
+    border-color: var(--lm-primary);
+}
+
+/* ========== 12. ANIMATIONS ========== */
+@keyframes lm-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes lm-slide-down {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========== 13. UTILITY CLASSES ========== */
+.lm-text-center { text-align: center; }
+.lm-text-right { text-align: right; }
+.lm-text-left { text-align: left; }
+
+.lm-mt-1 { margin-top: var(--lm-spacing-sm); }
+.lm-mt-2 { margin-top: var(--lm-spacing-md); }
+.lm-mt-3 { margin-top: var(--lm-spacing-lg); }
+.lm-mt-4 { margin-top: var(--lm-spacing-xl); }
+
+.lm-mb-1 { margin-bottom: var(--lm-spacing-sm); }
+.lm-mb-2 { margin-bottom: var(--lm-spacing-md); }
+.lm-mb-3 { margin-bottom: var(--lm-spacing-lg); }
+.lm-mb-4 { margin-bottom: var(--lm-spacing-xl); }
+
+.lm-p-1 { padding: var(--lm-spacing-sm); }
+.lm-p-2 { padding: var(--lm-spacing-md); }
+.lm-p-3 { padding: var(--lm-spacing-lg); }
+.lm-p-4 { padding: var(--lm-spacing-xl); }
+
+.lm-d-flex { display: flex; }
+.lm-d-grid { display: grid; }
+.lm-d-none { display: none; }
+
+.lm-justify-between { justify-content: space-between; }
+.lm-justify-center { justify-content: center; }
+.lm-align-center { align-items: center; }
+
+.lm-gap-1 { gap: var(--lm-spacing-sm); }
+.lm-gap-2 { gap: var(--lm-spacing-md); }
+.lm-gap-3 { gap: var(--lm-spacing-lg); }
+
+.lm-w-100 { width: 100%; }
+.lm-h-100 { height: 100%; }
+
+.lm-cursor-pointer { cursor: pointer; }
+.lm-overflow-hidden { overflow: hidden; }
+.lm-position-relative { position: relative; }
+.lm-position-absolute { position: absolute; }
+
+/* ========== 14. RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+    .lm-container {
+        padding: var(--lm-spacing-lg);
+    }
+
+    .lm-table th,
+    .lm-table td {
+        padding: var(--lm-spacing-sm);
+        font-size: 12px;
+    }
+
+    .lm-stat-value {
+        font-size: 24px;
+    }
+
+    .lm-header {
+        flex-direction: column;
+    }
+}
