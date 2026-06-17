@@ -51,11 +51,26 @@ public class LicenceController {
         double totalDueAmount=licenceService.totalDueAmount();
         String totalDueAmountInstring = UtilClass.formatNumber( totalDueAmount);
 
-        model.addAttribute("totalDueAmountInstring", totalDueAmountInstring);
-        model.addAttribute("totalDueAmount", totalDueAmount);
+        model.addAttribute("pageTitle", "Licence Management");
+        model.addAttribute("pageSubtitle", "Complete tracking & analytics for driving licences");
+        model.addAttribute("activePage", "licences");
+        model.addAttribute("licenceCount", 12);
+        model.addAttribute("totalLicences", 150);
+        model.addAttribute("licencesOver30Days", 25);
+        model.addAttribute("totalDueAmount", 45000);
+        model.addAttribute("totalItems", 150);
+        model.addAttribute("totalPages", 15);
+        model.addAttribute("currentPage", page);
         model.addAttribute("licences", licencePage);
-        model.addAttribute("pageTitle", "Licence List");
-        return "licence/licence_list";
+        model.addAttribute("pageSize", size);
+        model.addAttribute("startRecord", page * size + 1);
+        model.addAttribute("endRecord", Math.min((page + 1) * size, 150));
+
+        model.addAttribute("pageContent", "licence/licence_list");
+       // model.addAttribute("pageContent", "licence/dashboard");
+
+        return "fragments/layout";
+       // return "licence/licence_list";
     }
 
 
@@ -63,14 +78,21 @@ public class LicenceController {
     public String showCreateForm(Model model) {
         model.addAttribute("licence", new LicenceDTO());
         model.addAttribute("pageTitle", "Add New Licence");
-        return "licence/licence_form";
+        model.addAttribute("pageContent", "licence/licence_form");
+        // model.addAttribute("pageContent", "licence/dashboard");
+
+        return "fragments/layout";
+
     }
 
     @PostMapping("/save")
     public String saveLicence(@Valid @ModelAttribute("licence") LicenceDTO licenceDTO,BindingResult result, Model model,RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             model.addAttribute("pageTitle", "Add New Licence");
-            return "licence/licence_form";
+            model.addAttribute("pageContent", "licence/licence_form");
+            // model.addAttribute("pageContent", "licence/dashboard");
+
+            return "fragments/layout";
         }
 
         LicenceEntity entity = licenceMapper.toEntity(licenceDTO);

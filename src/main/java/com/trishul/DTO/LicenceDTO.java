@@ -1,6 +1,7 @@
 package com.trishul.DTO;
 
 import jakarta.validation.constraints.*;
+import lombok.Data;
 
 public class LicenceDTO {
 
@@ -16,8 +17,8 @@ public class LicenceDTO {
    // @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Father's name should contain only letters and spaces")
     private String father;
 
-    @NotBlank(message = "Learning licence number is required")
-    @Size(min = 5, max = 50, message = "Learning licence number must be between 5 and 50 characters")
+    //@NotBlank(message = "Learning licence number is required")
+   // @Size(min = 5, max = 50, message = "Learning licence number must be between 5 and 50 characters")
     private String leaningLinceNo;
 
     @Size(max = 50, message = "Driving licence number cannot exceed 50 characters")
@@ -40,6 +41,15 @@ public class LicenceDTO {
     private String vehicleType;
 
     private Long daysOld;  // Add this field
+    private String licenceType;
+
+    public String getLicenceType() {
+        return licenceType;
+    }
+
+    public void setLicenceType(String licenceType) {
+        this.licenceType = licenceType;
+    }
 
     // Add getter and setter for daysOld
     public Long getDaysOld() {
@@ -168,4 +178,6 @@ public class LicenceDTO {
         if (dueAmount > 0 && totalAmount != null && dueAmount < totalAmount) return "Partial";
         return "Pending";
     }
+
+
 }

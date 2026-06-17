@@ -2,6 +2,9 @@ package com.trishul.Model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "Licence")
 
@@ -39,6 +42,12 @@ public class LicenceEntity {
 
     @Column(name = "vehicleType")
     private String vehicleType;
+    @OneToMany(mappedBy = "licence", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<DocumentEntity> documents = new ArrayList<>();
+
+    // Getters and Setters
+    public List<DocumentEntity> getDocuments() { return documents; }
+    public void setDocuments(List<DocumentEntity> documents) { this.documents = documents; }
 
     public LicenceEntity(Long liId, String customerName, String father, String leaningLinceNo, String divingLincence, String mobNumber, Long totalAmount, Long dueAmount, String applydate, String vehicleType) {
         this.liId = liId;

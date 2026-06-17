@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+
+<!-- Page Content Fragment -->
+
+<div th:fragment="pageContent">
+    <div th:fragment="header" class="header">
+        <div class="header-left">
+            <button class="menu-toggle-btn" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div>
+                <div class="header-title">
+                    <h1 th:text="${pageTitle}">Dashboard</h1>
+                    <p th:text="${pageSubtitle}">Welcome back, Admin!</p>
+                </div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="#" class="btn btn-outline" onclick="window.print()">
+                <i class="fas fa-print"></i> Print
+            </a>
+            <a href="#" class="btn btn-outline">
+                <i class="fas fa-file-export"></i> Export
+            </a>
+            <a href="/licence/new" class="btn btn-primary">
+                <i class="fas fa-plus"></i> New Licence
+            </a>
+        </div>
+    </div>
+    <!-- Stats Section -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin-bottom:24px;">
+        <div class="stat-card">
+            <div class="stat-top">
+                <span class="stat-label">Total Licences</span>
+                <div class="stat-icon blue"><i class="fas fa-id-card"></i></div>
+            </div>
+            <div class="stat-value" th:text="${totalLicences}">0</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <span class="stat-label">Active</span>
+                <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+            </div>
+            <div class="stat-value" th:text="120">0</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <span class="stat-label">Overdue</span>
+                <div class="stat-icon orange"><i class="fas fa-hourglass-half"></i></div>
+            </div>
+            <div class="stat-value" th:text="130">0</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-top">
+                <span class="stat-label">Total Due</span>
+                <div class="stat-icon red"><i class="fas fa-rupee-sign"></i></div>
+            </div>
+            <div class="stat-value" th:text="'₹' + ${totalDueAmount}">₹0</div>
+        </div>
+    </div>
+
+    <!-- Service Cards -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px;">
+        <!-- Licence Service -->
+        <div class="service-card">
+            <div class="service-icon blue"><i class="fas fa-id-card"></i></div>
+            <h3>Licence Services</h3>
+            <p>Manage learning & driving licences</p>
+            <div class="service-stats">
+                <div class="stat">
+                    <div class="num">45</div>
+                    <div class="label">Total</div>
+                </div>
+                <div class="stat">
+                    <div class="num">12</div>
+                    <div class="label">Pending</div>
+                </div>
+                <div class="stat">
+                    <div class="num">33</div>
+                    <div class="label">Completed</div>
+                </div>
+            </div>
+            <div class="service-actions">
+                <a href="/licence/new" class="btn-sm primary">
+                    <i class="fas fa-plus"></i> New
+                </a>
+                <a href="/licence/list" class="btn-sm primary-outline">
+                    <i class="fas fa-eye"></i> View All
+                </a>
+            </div>
+        </div>
+
+        <!-- Vehicle Transfer -->
+        <div class="service-card">
+            <div class="service-icon orange"><i class="fas fa-exchange-alt"></i></div>
+            <h3>Vehicle Transfer</h3>
+            <p>Manage vehicle ownership transfers</p>
+            <div class="service-stats">
+                <div class="stat">
+                    <div class="num">156</div>
+                    <div class="label">Total</div>
+                </div>
+                <div class="stat">
+                    <div class="num">8</div>
+                    <div class="label">Pending</div>
+                </div>
+                <div class="stat">
+                    <div class="num">148</div>
+                    <div class="label">Completed</div>
+                </div>
+            </div>
+            <div class="service-actions">
+                <a href="/vehicle-transfer/new" class="btn-sm warning">
+                    <i class="fas fa-plus"></i> New
+                </a>
+                <a href="vehicle-transfer/list" class="btn-sm warning-outline">
+                    <i class="fas fa-eye"></i> View All
+                </a>
+            </div>
+        </div>
+
+        <!-- Insurance -->
+        <div class="service-card">
+            <div class="service-icon green"><i class="fas fa-shield-alt"></i></div>
+            <h3>Insurance Services</h3>
+            <p>Manage vehicle insurance policies</p>
+            <div class="service-stats">
+                <div class="stat">
+                    <div class="num">89</div>
+                    <div class="label">Total</div>
+                </div>
+                <div class="stat">
+                    <div class="num">5</div>
+                    <div class="label">Expiring</div>
+                </div>
+                <div class="stat">
+                    <div class="num">84</div>
+                    <div class="label">Active</div>
+                </div>
+            </div>
+            <div class="service-actions">
+                <a href="#" class="btn-sm success">
+                    <i class="fas fa-plus"></i> New
+                </a>
+                <a href="#" class="btn-sm success-outline">
+                    <i class="fas fa-eye"></i> View All
+                </a>
+            </div>
+        </div>
+
+        <!-- PUC -->
+        <div class="service-card">
+            <div class="service-icon purple"><i class="fas fa-leaf"></i></div>
+            <h3>PUC Services</h3>
+            <p>Manage pollution certificates</p>
+            <div class="service-stats">
+                <div class="stat">
+                    <div class="num">234</div>
+                    <div class="label">Total</div>
+                </div>
+                <div class="stat">
+                    <div class="num">15</div>
+                    <div class="label">Expiring</div>
+                </div>
+                <div class="stat">
+                    <div class="num">219</div>
+                    <div class="label">Valid</div>
+                </div>
+            </div>
+            <div class="service-actions">
+                <a href="#" class="btn-sm purple">
+                    <i class="fas fa-plus"></i> New
+                </a>
+                <a href="#" class="btn-sm purple-outline">
+                    <i class="fas fa-eye"></i> View All
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

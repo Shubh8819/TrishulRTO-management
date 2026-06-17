@@ -1,63 +1,32 @@
-package com.trishul.Model;
+package com.trishul.DTO;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "documents")
-public class DocumentEntity {
+public class DocumentDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "file_name")
     private String fileName;
-
-    @Column(name = "original_file_name")
     private String originalFileName;
-
-    @Column(name = "file_path")
     private String filePath;
-
-    @Column(name = "file_size")
     private Long fileSize;
-
-    @Column(name = "file_type")
     private String fileType;
-
-    @Column(name = "document_type")
     private String documentType;
-
-    @Column(name = "upload_date")
     private LocalDateTime uploadDate;
-
-    // ===== RELATIONSHIPS =====
-
-    // For Vehicle Transfer Module
-    @ManyToOne
-    @JoinColumn(name = "vehicle_transfer_id")
-    private VehicleTransferEntity vehicleTransfer;
-
-    // For Licence Module (if needed)
-    @ManyToOne
-    @JoinColumn(name = "licence_id")
-    private LicenceEntity licence;
+    private Long vehicleTransferId;
+    private Long licenceId;
 
     // Constructors
-    public DocumentEntity() {
-        this.uploadDate = LocalDateTime.now();
-    }
+    public DocumentDTO() {}
 
-    public DocumentEntity(String fileName, String originalFileName, String filePath,
-                          Long fileSize, String fileType, String documentType) {
+    public DocumentDTO(Long id, String fileName, String originalFileName, String filePath,
+                       Long fileSize, String fileType, String documentType) {
+        this.id = id;
         this.fileName = fileName;
         this.originalFileName = originalFileName;
         this.filePath = filePath;
         this.fileSize = fileSize;
         this.fileType = fileType;
         this.documentType = documentType;
-        this.uploadDate = LocalDateTime.now();
     }
 
     // Getters and Setters
@@ -85,9 +54,9 @@ public class DocumentEntity {
     public LocalDateTime getUploadDate() { return uploadDate; }
     public void setUploadDate(LocalDateTime uploadDate) { this.uploadDate = uploadDate; }
 
-    public VehicleTransferEntity getVehicleTransfer() { return vehicleTransfer; }
-    public void setVehicleTransfer(VehicleTransferEntity vehicleTransfer) { this.vehicleTransfer = vehicleTransfer; }
+    public Long getVehicleTransferId() { return vehicleTransferId; }
+    public void setVehicleTransferId(Long vehicleTransferId) { this.vehicleTransferId = vehicleTransferId; }
 
-    public LicenceEntity getLicence() { return licence; }
-    public void setLicence(LicenceEntity licence) { this.licence = licence; }
+    public Long getLicenceId() { return licenceId; }
+    public void setLicenceId(Long licenceId) { this.licenceId = licenceId; }
 }
