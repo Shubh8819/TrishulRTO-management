@@ -133,4 +133,23 @@ public class LicenceController {
         redirectAttributes.addFlashAttribute("message", "Licence deleted successfully!");
         return "redirect:/licence/list";
     }
+    // View Licence (Read-Only)
+    @GetMapping("/view/{id}")
+    public String showViewForm(@PathVariable Long id, Model model) {
+        LicenceEntity entity = licenceService.getLicenceById(id).orElse(null);
+        LicenceDTO licenceDTO = licenceMapper.toDTO(entity);
+
+        // Set default values if null
+        if (licenceDTO.getLicenceType() == null) {
+            licenceDTO.setLicenceType("Learning Licence (LL)");
+        }
+
+        model.addAttribute("licence", licenceDTO);
+        model.addAttribute("pageTitle", "View Licence");
+        model.addAttribute("pageSubtitle", "View complete licence details");
+        model.addAttribute("activePage", "licences");
+        model.addAttribute("pageContent", "licence/licence_view");
+
+        return "fragments/layout";
+    }
 }
