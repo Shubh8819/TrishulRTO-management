@@ -1103,9 +1103,9 @@
             </td>
             <td>
               <div class="action-btns">
-                <button class="action-btn view" onclick="viewDetails(this)" title="View Details">
+                <a th:href="@{/licence/view/{id}(id=${licence.liId})}" class="action-btn edit" title="Edit">
                   <i class="fas fa-eye"></i>
-                </button>
+                </a>
                 <a th:href="@{/licence/edit/{id}(id=${licence.liId})}" class="action-btn edit" title="Edit">
                   <i class="fas fa-edit"></i>
                 </a>

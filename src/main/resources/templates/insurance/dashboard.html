@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="pageContent">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${pageTitle}">Insurance Dashboard</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+        --primary: #0d47a1;
+        --primary-light: #1565c0;
+        --primary-dark: #0a2e6e;
+        --secondary: #e65100;
+        --success: #2e7d32;
+        --danger: #c62828;
+        --warning: #f57f17;
+        --info: #00838f;
+        --text-primary: #1a2332;
+        --text-secondary: #4a5568;
+        --text-muted: #718096;
+        --border-color: #e2e8f0;
+        --bg-light: #f7fafc;
+        --bg-white: #ffffff;
+        --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+        --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+        --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+        --radius-sm: 6px;
+        --radius-md: 10px;
+        --radius-lg: 14px;
+        --radius-xl: 20px;
+        --radius-full: 9999px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background: #eef2f7;
+        min-height: 100vh;
+        padding: 24px;
+    }
+
+    .container {
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
+    /* ========== HEADER ========== */
+    .page-header {
+        background: var(--bg-white);
+        border-radius: var(--radius-xl);
+        padding: 24px 32px;
+        margin-bottom: 28px;
+        box-shadow: var(--shadow-sm);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .page-header .title-section h1 {
+        font-size: 26px;
+        font-weight: 800;
+        color: var(--text-primary);
+        letter-spacing: -0.5px;
+    }
+
+    .page-header .title-section h1 i {
+        color: var(--primary);
+        margin-right: 10px;
+    }
+
+    .page-header .title-section p {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-top: 4px;
+    }
+
+    .page-header .action-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 10px 24px;
+        border: none;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: 'Inter', sans-serif;
+        text-decoration: none;
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 4px 14px rgba(13, 71, 161, 0.25);
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(13, 71, 161, 0.35);
+    }
+
+    .btn-success {
+        background: var(--success);
+        color: white;
+    }
+
+    .btn-success:hover {
+        background: #1b5e20;
+        transform: translateY(-2px);
+    }
+
+    .btn-outline {
+        background: transparent;
+        color: var(--text-secondary);
+        border: 2px solid var(--border-color);
+    }
+
+    .btn-outline:hover {
+        background: var(--bg-light);
+        transform: translateY(-2px);
+    }
+
+    /* ========== STATS GRID ========== */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 28px;
+    }
+
+    .stat-card {
+        background: var(--bg-white);
+        border-radius: var(--radius-md);
+        padding: 20px 24px;
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+        border-left: 4px solid var(--primary);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .stat-card .stat-label {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-muted);
+    }
+
+    .stat-card .stat-value {
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin: 6px 0 2px;
+    }
+
+    .stat-card .stat-sub {
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+
+    .stat-card .stat-icon {
+        float: right;
+        font-size: 28px;
+        opacity: 0.3;
+    }
+
+    .stat-card.primary { border-left-color: var(--primary); }
+    .stat-card.success { border-left-color: var(--success); }
+    .stat-card.warning { border-left-color: var(--warning); }
+    .stat-card.danger { border-left-color: var(--danger); }
+    .stat-card.info { border-left-color: var(--info); }
+    .stat-card.secondary { border-left-color: var(--secondary); }
+
+    /* ========== SECTION TITLE ========== */
+    .section-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .section-title h2 {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    .section-title a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .section-title a:hover {
+        text-decoration: underline;
+    }
+
+    /* ========== TABLE ========== */
+    .table-wrapper {
+        background: var(--bg-white);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 28px;
+    }
+
+    .table-wrapper table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table-wrapper th {
+        background: var(--bg-light);
+        padding: 12px 16px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-muted);
+        border-bottom: 2px solid var(--border-color);
+    }
+
+    .table-wrapper td {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border-color);
+        font-size: 14px;
+        color: var(--text-secondary);
+    }
+
+    .table-wrapper tr:hover td {
+        background: var(--bg-light);
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 3px 12px;
+        border-radius: var(--radius-full);
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .badge-active { background: #e8f5e9; color: var(--success); }
+    .badge-expired { background: #ffebee; color: var(--danger); }
+    .badge-pending { background: #fff3e0; color: var(--warning); }
+    .badge-cancelled { background: #f5f5f5; color: var(--text-muted); }
+    .badge-renewed { background: #e3f2fd; color: var(--primary); }
+
+    .btn-sm {
+        padding: 4px 12px;
+        font-size: 12px;
+        border-radius: var(--radius-sm);
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 768px) {
+        body { padding: 16px; }
+        .page-header { padding: 20px; flex-direction: column; align-items: stretch; }
+        .page-header .action-buttons { justify-content: stretch; }
+        .page-header .action-buttons .btn { flex: 1; justify-content: center; }
+        .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        .table-wrapper { overflow-x: auto; }
+    }
+
+    @media (max-width: 480px) {
+        .stats-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="title-section">
+      <h1><i class="fas fa-shield-alt"></i> <span th:text="${pageTitle}">Insurance Dashboard</span></h1>
+      <p th:text="${pageSubtitle}">Complete tracking & analytics for vehicle insurance</p>
+    </div>
+    <div class="action-buttons">
+      <a href="/insurance/list" class="btn btn-outline">
+        <i class="fas fa-list"></i> View All Policies
+      </a>
+      <a href="/insurance/new" class="btn btn-primary">
+        <i class="fas fa-plus"></i> New Policy
+      </a>
+    </div>
+  </div>
+
+  <!-- Statistics -->
+  <div class="stats-grid">
+    <div class="stat-card primary">
+      <i class="fas fa-file-contract stat-icon"></i>
+      <div class="stat-label">Total Policies</div>
+      <div class="stat-value" th:text="${totalPolicies}">0</div>
+      <div class="stat-sub">All registered policies</div>
+    </div>
+    <div class="stat-card success">
+      <i class="fas fa-check-circle stat-icon"></i>
+      <div class="stat-label">Active Policies</div>
+      <div class="stat-value" th:text="${activePolicies}">0</div>
+      <div class="stat-sub">Currently active</div>
+    </div>
+    <div class="stat-card warning">
+      <i class="fas fa-hourglass-half stat-icon"></i>
+      <div class="stat-label">Expiring Soon</div>
+      <div class="stat-value" th:text="${expiringPolicies}">0</div>
+      <div class="stat-sub">Within next 30 days</div>
+    </div>
+    <div class="stat-card danger">
+      <i class="fas fa-times-circle stat-icon"></i>
+      <div class="stat-label">Expired Policies</div>
+      <div class="stat-value" th:text="${expiredPolicies}">0</div>
+      <div class="stat-sub">Need renewal</div>
+    </div>
+    <div class="stat-card info">
+      <i class="fas fa-rupee-sign stat-icon"></i>
+      <div class="stat-label">Total Premium</div>
+      <div class="stat-value">₹<span th:text="${totalPremium}">0</span></div>
+      <div class="stat-sub">All policies combined</div>
+    </div>
+    <div class="stat-card secondary">
+      <i class="fas fa-coins stat-icon"></i>
+      <div class="stat-label">Active Premium</div>
+      <div class="stat-value">₹<span th:text="${activePremium}">0</span></div>
+      <div class="stat-sub">From active policies</div>
+    </div>
+  </div>
+
+  <!-- Recent Policies -->
+  <div class="section-title">
+    <h2><i class="fas fa-clock" style="color: var(--primary);"></i> Recent Policies</h2>
+    <a href="/insurance/list">View All →</a>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+      <tr>
+        <th>Policy No.</th>
+        <th>Holder Name</th>
+        <th>Vehicle</th>
+        <th>Premium</th>
+        <th>Status</th>
+        <th>End Date</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="policy : ${recentPolicies}">
+        <td><strong th:text="${policy.policyNumber}">INS-2024-001</strong></td>
+        <td th:text="${policy.holderName}">John Doe</td>
+        <td>
+          <span th:text="${policy.vehicleModel}">Honda City</span>
+          <br><small style="color: var(--text-muted);" th:text="${policy.registrationNumber}">GJ-01-AB-1234</small>
+        </td>
+        <td>₹<span th:text="${policy.premiumAmount}">5000</span></td>
+        <td>
+
+                          <span th:switch="${policy.policyStatus}" class="badge">
+    <span th:case="'ACTIVE'" class="badge-active" th:text="${policy.policyStatus}">ACTIVE</span>
+    <span th:case="'EXPIRED'" class="badge-expired" th:text="${policy.policyStatus}">EXPIRED</span>
+    <span th:case="'PENDING'" class="badge-pending" th:text="${policy.policyStatus}">PENDING</span>
+    <span th:case="'CANCELLED'" class="badge-cancelled" th:text="${policy.policyStatus}">CANCELLED</span>
+    <span th:case="*" class="badge-renewed" th:text="${policy.policyStatus}">RENEWED</span>
+</span>
+        </td>
+        <td th:text="${policy.endDate}">2025-01-01</td>
+        <td>
+          <a th:href="@{/insurance/view/{id}(id=${policy.policyId})}" class="btn btn-primary btn-sm">
+            <i class="fas fa-eye"></i>
+          </a>
+          <a th:href="@{/insurance/edit/{id}(id=${policy.policyId})}" class="btn btn-success btn-sm">
+            <i class="fas fa-edit"></i>
+          </a>
+        </td>
+      </tr>
+      <tr th:if="${recentPolicies == null or recentPolicies.isEmpty()}">
+        <td colspan="7" style="text-align: center; padding: 40px; color: var(--text-muted);">
+          <i class="fas fa-inbox" style="font-size: 32px; display: block; margin-bottom: 8px;"></i>
+          No insurance policies found. <a href="/insurance/new">Create your first policy</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</th:block>
+</html>

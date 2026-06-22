@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="pageContent">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">View Insurance Policy</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Reuse styles from form page with additional view styles */
+        :root {
+            --primary: #0d47a1;
+            --success: #2e7d32;
+            --danger: #c62828;
+            --warning: #f57f17;
+            --text-primary: #1a2332;
+            --text-secondary: #4a5568;
+            --text-muted: #718096;
+            --border-color: #e2e8f0;
+            --bg-light: #f7fafc;
+            --bg-white: #ffffff;
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --radius-xl: 20px;
+            --radius-full: 9999px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #eef2f7;
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        .view-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-xl);
+            padding: 32px 40px;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .view-header {
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--bg-light);
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .view-header h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .view-header h1 i { color: var(--primary); margin-right: 10px; }
+
+        .view-header .policy-number {
+            font-size: 14px;
+            color: var(--text-muted);
+            background: var(--bg-light);
+            padding: 6px 18px;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border-color);
+        }
+
+        .view-header .policy-number strong { color: var(--text-primary); }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-active { background: #e8f5e9; color: var(--success); }
+        .badge-expired { background: #ffebee; color: var(--danger); }
+        .badge-pending { background: #fff3e0; color: var(--warning); }
+        .badge-cancelled { background: #f5f5f5; color: var(--text-muted); }
+        .badge-renewed { background: #e3f2fd; color: var(--primary); }
+
+        .detail-section {
+            background: var(--bg-light);
+            border-radius: var(--radius-md);
+            padding: 20px 24px;
+            margin-bottom: 16px;
+        }
+
+        .detail-section .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px 24px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-item .label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+
+        .detail-item .value {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-top: 2px;
+        }
+
+        .detail-item .value code {
+            background: var(--bg-white);
+            padding: 2px 10px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            border: 1px solid var(--border-color);
+        }
+
+        .detail-item.full-width { grid-column: 1 / -1; }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid var(--bg-light);
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 14px rgba(13, 71, 161, 0.25);
+        }
+
+        .btn-primary:hover {
+            background: #0a2e6e;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #1b5e20;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e65100;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #b71c1c;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--bg-light);
+            transform: translateY(-2px);
+        }
+
+        /* Status Banner */
+        .status-banner {
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+        }
+
+        .status-banner.active { background: #e8f5e9; color: var(--success); border-left: 4px solid var(--success); }
+        .status-banner.expired { background: #ffebee; color: var(--danger); border-left: 4px solid var(--danger); }
+        .status-banner.pending { background: #fff3e0; color: var(--warning); border-left: 4px solid var(--warning); }
+        .status-banner.cancelled { background: #f5f5f5; color: var(--text-muted); border-left: 4px solid var(--text-muted); }
+        .status-banner.renewed { background: #e3f2fd; color: var(--primary); border-left: 4px solid var(--primary); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            .view-card { padding: 20px; }
+            .detail-grid { grid-template-columns: 1fr; }
+            .detail-item.full-width { grid-column: 1; }
+            .view-header { flex-direction: column; align-items: stretch; }
+            .action-buttons { flex-direction: column; align-items: stretch; }
+            .btn { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+<div class="">
+    <div class="view-card">
+        <!-- Header -->
+        <div class="view-header">
+            <div>
+                <h1><i class="fas fa-file-alt"></i> <span th:text="${pageTitle}">Insurance Policy Details</span></h1>
+                <p th:text="${pageSubtitle}">Complete policy information</p>
+            </div>
+            <div class="policy-number">
+                <i class="fas fa-hashtag"></i> Policy: <strong th:text="${insurance.policyNumber}">INS-2024-001</strong>
+            </div>
+        </div>
+
+        <!-- Status Banner -->
+        <!--<div class="status-banner"
+             th:classappend="${insurance.policyStatus == 'ACTIVE'} ? 'active' :
+                                ${insurance.policyStatus == 'EXPIRED'} ? 'expired' :
+                                ${insurance.policyStatus == 'PENDING'} ? 'pending' :
+                                ${insurance.policyStatus == 'CANCELLED'} ? 'cancelled' : 'renewed'">
+            <i class="fas"
+               th:classappend="${insurance.policyStatus == 'ACTIVE'} ? 'fa-check-circle' :
+                                  ${insurance.policyStatus == 'EXPIRED'} ? 'fa-times-circle' :
+                                  ${insurance.policyStatus == 'PENDING'} ? 'fa-clock' :
+                                  ${insurance.policyStatus == 'CANCELLED'} ? 'fa-ban' : 'fa-sync-alt'"></i>
+            <span>
+                    <strong>Status:</strong> <span th:text="${insurance.policyStatus}">ACTIVE</span>
+                    <span th:if="${insurance.daysRemaining != null and insurance.daysRemaining > 0 and insurance.policyStatus == 'ACTIVE'}"
+                          style="font-weight: 400;">
+                        · <span th:text="${insurance.daysRemaining}"></span> days remaining
+                    </span>
+                    <span th:if="${insurance.policyTerm != null}"
+                          style="font-weight: 400;">· <span th:text="${insurance.policyTerm}"></span></span>
+                </span>
+        </div>-->
+        <span th:switch="${policy.policyStatus}" class="badge">
+    <span th:case="'ACTIVE'" class="badge-active" th:text="${policy.policyStatus}">ACTIVE</span>
+    <span th:case="'EXPIRED'" class="badge-expired" th:text="${policy.policyStatus}">EXPIRED</span>
+    <span th:case="'PENDING'" class="badge-pending" th:text="${policy.policyStatus}">PENDING</span>
+    <span th:case="'CANCELLED'" class="badge-cancelled" th:text="${policy.policyStatus}">CANCELLED</span>
+    <span th:case="*" class="badge-renewed" th:text="${policy.policyStatus}">RENEWED</span>
+</span>
+
+        <!-- Section 1: Policy Holder Details -->
+        <div class="detail-section">
+            <div class="section-title">
+                <i class="fas fa-user" style="color: var(--primary);"></i> Policy Holder Details
+            </div>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="label">Full Name</span>
+                    <span class="value" th:text="${insurance.holderName}">John Doe</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Date of Birth</span>
+                    <span class="value" th:text="${insurance.holderDob}">1990-01-01</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Mobile Number</span>
+                    <span class="value" th:text="${insurance.holderMobile}">9876543210</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Email</span>
+                    <span class="value" th:text="${insurance.holderEmail} ?: '-'">john@example.com</span>
+                </div>
+                <div class="detail-item full-width">
+                    <span class="label">Address</span>
+                    <span class="value" th:text="${insurance.holderAddress}">123, Main Street, City</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Vehicle Details -->
+        <div class="detail-section">
+            <div class="section-title">
+                <i class="fas fa-car" style="color: var(--primary);"></i> Vehicle Details
+            </div>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="label">Registration Number</span>
+                    <span class="value"><code th:text="${insurance.registrationNumber}">GJ-01-AB-1234</code></span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Vehicle Type</span>
+                    <span class="value" th:text="${insurance.vehicleType}">4 Wheeler</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Make / Model</span>
+                    <span class="value" th:text="${insurance.vehicleModel}">Honda City</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Manufacturing Year</span>
+                    <span class="value" th:text="${insurance.vehicleYear}">2023</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Engine Number</span>
+                    <span class="value" th:text="${insurance.engineNumber} ?: '-'">ENG-12345</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Chassis Number</span>
+                    <span class="value" th:text="${insurance.chassisNumber} ?: '-'">CHS-67890</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Policy Coverage -->
+        <div class="detail-section">
+            <div class="section-title">
+                <i class="fas fa-shield-virus" style="color: var(--primary);"></i> Policy Coverage
+            </div>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="label">Policy Type</span>
+                    <span class="value" th:text="${insurance.policyType}">Comprehensive</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Insurance Company</span>
+                    <span class="value" th:text="${insurance.insuranceCompany}">New India Assurance</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Start Date</span>
+                    <span class="value" th:text="${insurance.startDate}">2024-01-01</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">End Date</span>
+                    <span class="value" th:text="${insurance.endDate}">2025-01-01</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Premium Amount</span>
+                    <span class="value" style="font-weight: 700; color: var(--primary);">
+                            ₹<span th:text="${insurance.premiumAmount}">5000</span>
+                        </span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Sum Insured</span>
+                    <span class="value" style="font-weight: 700; color: var(--success);">
+                            ₹<span th:text="${insurance.sumInsured}">500000</span>
+                        </span>
+                </div>
+                <div class="detail-item full-width">
+                    <span class="label">Add-on Covers</span>
+                    <span class="value">
+                            <span th:each="cover : ${insurance.addonCovers}"
+                                  style="display: inline-block; background: var(--bg-white); padding: 2px 12px;
+                                         border-radius: var(--radius-full); border: 1px solid var(--border-color);
+                                         margin: 2px 4px 2px 0; font-size: 12px;"
+                                  th:text="${cover}">Roadside Assistance</span>
+                            <span th:if="${insurance.addonCovers == null or insurance.addonCovers.isEmpty()}">None</span>
+                        </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Audit Info -->
+        <div style="font-size: 12px; color: var(--text-muted); text-align: right; padding: 8px 4px;">
+                <span th:if="${insurance.createdAt}">
+                    <i class="fas fa-clock"></i> Created: <span th:text="${insurance.createdAt}">2024-01-01 10:00:00</span>
+                </span>
+            <span th:if="${insurance.updatedAt}" style="margin-left: 16px;">
+                    <i class="fas fa-edit"></i> Updated: <span th:text="${insurance.updatedAt}">2024-01-01 10:00:00</span>
+                </span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="/insurance/list" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+            <a th:href="@{/insurance/edit/{id}(id=${insurance.policyId})}" class="btn btn-primary">
+                <i class="fas fa-edit"></i> Edit Policy
+            </a>
+            <a th:href="@{/insurance/renew/{id}(id=${insurance.policyId})}"
+               class="btn btn-success"
+               th:if="${insurance.policyStatus == 'EXPIRED' or insurance.policyStatus == 'ACTIVE'}">
+                <i class="fas fa-sync-alt"></i> Renew Policy
+            </a>
+            <a th:href="@{/insurance/cancel/{id}(id=${insurance.policyId})}"
+               class="btn btn-warning"
+               th:if="${insurance.policyStatus == 'ACTIVE'}"
+               onclick="return confirm('Are you sure you want to cancel this policy?')">
+                <i class="fas fa-ban"></i> Cancel Policy
+            </a>
+            <a th:href="@{/insurance/delete/{id}(id=${insurance.policyId})}"
+               class="btn btn-danger"
+               th:if="${insurance.policyStatus != 'ACTIVE'}"
+               onclick="return confirm('Are you sure you want to delete this policy?')">
+                <i class="fas fa-trash"></i> Delete Policy
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</th:block>
+</html>
