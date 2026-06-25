@@ -56,7 +56,7 @@ public class VehicleTransferServiceImpl implements VehicleTransferService {
 
     @Override
     public VehicleTransferEntity updateTransfer(VehicleTransferEntity transfer) {
-        transfer.setUpdatedDate(LocalDateTime.from(LocalDate.now()));
+        transfer.setUpdatedDate(LocalDateTime.now());
         return vehicleTransferRepository.save(transfer);
     }
 

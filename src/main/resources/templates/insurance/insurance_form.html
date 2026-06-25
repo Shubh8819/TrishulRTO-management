@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="pageContent">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${pageTitle}">Insurance Policy Form</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+        --primary: #0d47a1;
+        --primary-dark: #0a2e6e;
+        --success: #2e7d32;
+        --danger: #c62828;
+        --text-primary: #1a2332;
+        --text-secondary: #4a5568;
+        --text-muted: #718096;
+        --border-color: #e2e8f0;
+        --bg-light: #f7fafc;
+        --bg-white: #ffffff;
+        --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+        --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+        --radius-sm: 6px;
+        --radius-md: 10px;
+        --radius-lg: 14px;
+        --radius-xl: 20px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background: #eef2f7;
+        min-height: 100vh;
+        padding: 24px;
+    }
+
+    .container { max-width: 900px; margin: 0 auto; }
+
+    .form-card {
+        background: var(--bg-white);
+        border-radius: var(--radius-xl);
+        padding: 32px 40px;
+        box-shadow: var(--shadow-lg);
+        animation: slideUp 0.5s ease;
+    }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Header */
+    .form-header {
+        padding-bottom: 24px;
+        border-bottom: 2px solid var(--bg-light);
+        margin-bottom: 28px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .form-header h1 {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--text-primary);
+    }
+
+    .form-header h1 i { color: var(--primary); margin-right: 10px; }
+
+    .form-header p {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-top: 4px;
+    }
+
+    .form-header .badge-form {
+        padding: 6px 18px;
+        border-radius: var(--radius-full);
+        font-size: 12px;
+        font-weight: 600;
+        background: var(--bg-light);
+        color: var(--text-muted);
+    }
+
+    /* Alert */
+    .alert {
+        padding: 14px 20px;
+        border-radius: var(--radius-sm);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 500;
+        animation: slideDown 0.4s ease;
+    }
+
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .alert-danger { background: #ffebee; color: var(--danger); border-left: 4px solid var(--danger); }
+
+    /* Form */
+    .form-section {
+        background: var(--bg-light);
+        border-radius: var(--radius-md);
+        padding: 20px 24px;
+        margin-bottom: 20px;
+        border: 1px solid var(--border-color);
+    }
+
+    .form-section .section-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-section .section-title .section-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        background: var(--primary);
+        color: white;
+        border-radius: 50%;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .form-group { display: flex; flex-direction: column; }
+    .form-group.full-width { grid-column: 1 / -1; }
+
+    .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .form-group label .required { color: var(--danger); font-size: 16px; }
+    .form-group label .optional {
+        color: var(--text-muted);
+        font-weight: 400;
+        font-size: 11px;
+        background: var(--bg-white);
+        padding: 1px 10px;
+        border-radius: var(--radius-full);
+        border: 1px solid var(--border-color);
+    }
+
+    .form-group .input-wrapper { position: relative; }
+
+    .form-group .input-wrapper .input-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        font-size: 15px;
+        pointer-events: none;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%;
+        padding: 10px 14px 10px 40px;
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius-sm);
+        font-size: 14px;
+        font-family: 'Inter', sans-serif;
+        transition: var(--transition);
+        background: var(--bg-white);
+        color: var(--text-primary);
+    }
+
+    .form-group textarea {
+        padding: 10px 14px;
+        resize: vertical;
+        min-height: 60px;
+    }
+
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.08);
+    }
+
+    .form-group .error-text {
+        color: var(--danger);
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .form-group input.error, .form-group select.error, .form-group textarea.error {
+        border-color: var(--danger);
+    }
+
+    /* Checkbox Group */
+    .checkbox-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding-top: 6px;
+    }
+
+    .checkbox-group label {
+        font-weight: 400;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        accent-color: var(--primary);
+    }
+
+    /* Actions */
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 8px;
+        padding-top: 24px;
+        border-top: 2px solid var(--bg-light);
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 10px 32px;
+        border: none;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: 'Inter', sans-serif;
+        text-decoration: none;
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 4px 14px rgba(13, 71, 161, 0.25);
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(13, 71, 161, 0.35);
+    }
+
+    .btn-secondary {
+        background: var(--bg-light);
+        color: var(--text-secondary);
+        border: 2px solid var(--border-color);
+    }
+
+    .btn-secondary:hover { background: var(--border-color); transform: translateY(-2px); }
+
+    .btn-danger {
+        background: transparent;
+        color: var(--danger);
+        border: 2px solid var(--danger);
+    }
+
+    .btn-danger:hover { background: var(--danger); color: white; transform: translateY(-2px); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        body { padding: 16px; }
+        .form-card { padding: 20px; }
+        .form-grid { grid-template-columns: 1fr; }
+        .form-group.full-width { grid-column: 1; }
+        .form-actions { flex-direction: column; align-items: stretch; }
+        .btn { justify-content: center; }
+        .checkbox-group { flex-direction: column; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+<div class="">
+  <div class="form-card">
+    <!-- Header -->
+    <div class="form-header">
+      <div>
+        <h1>
+          <i class="fas fa-shield-alt"></i>
+          <span th:text="${pageTitle}">Insurance Policy</span>
+        </h1>
+        <p th:text="${pageSubtitle}">Fill in the details to register a new insurance policy</p>
+      </div>
+      <span class="badge-form" th:text="${isEdit} ? '✏️ Edit Mode' : '📝 New Policy'">
+                    📝 New Policy
+                </span>
+    </div>
+
+    <!-- Error Alert -->
+  <!--  <div th:if="${#fields.hasErrors()}" class="alert alert-danger">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>Please fix the errors below before submitting.</span>
+    </div>
+-->
+    <!-- Form -->
+    <form th:action="${isEdit} ? @{/insurance/update/{id}(id=${policyId})} : @{/insurance/save}"
+          method="post" th:object="${insurance}">
+
+      <input type="hidden" th:field="*{policyId}" th:if="${isEdit}"/>
+
+      <!-- Section 1: Policy Holder Details -->
+      <div class="form-section">
+        <div class="section-title">
+          <span class="section-number">1</span>
+          <span><i class="fas fa-user" style="color: var(--primary);"></i> Policy Holder Details</span>
+        </div>
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label>Full Name <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="fas fa-user input-icon"></i>
+              <input type="text" th:field="*{holderName}" placeholder="Enter full name"
+                     th:classappend="${#fields.hasErrors('holderName')} ? 'error' : ''"/>
+            </div>
+            <span class="error-text" th:if="${#fields.hasErrors('holderName')}"
+                  th:errors="*{holderName}">Error</span>
+          </div>
+
+          <div class="form-group">
+            <label>Date of Birth <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="fas fa-calendar-alt input-icon"></i>
+              <input type="date" th:field="*{holderDob}"
+                     th:classappend="${#fields.hasErrors('holderDob')} ? 'error' : ''"/>
+            </div>
+            <span class="error-text" th:if="${#fields.hasErrors('holderDob')}"
+                  th:errors="*{holderDob}">Error</span>
+          </div>
+
+          <div class="form-group">
+            <label>Mobile Number <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="fas fa-phone input-icon"></i>
+              <input type="tel" th:field="*{holderMobile}" placeholder="10 digit mobile number"
+                     th:classappend="${#fields.hasErrors('holderMobile')} ? 'error' : ''"/>
+            </div>
+            <span class="error-text" th:if="${#fields.hasErrors('holderMobile')}"
+                  th:errors="*{holderMobile}">Error</span>
+          </div>
+
+          <div class="form-group">
+            <label>Email <span class="optional">Optional</span></label>
+            <div class="input-wrapper">
+              <i class="fas fa-envelope input-icon"></i>
+              <input type="email" th:field="*{holderEmail}" placeholder="example@email.com"/>
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label>Address <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="fas fa-home input-icon" style="top: 16px; transform: none;"></i>
+              <textarea th:field="*{holderAddress}" placeholder="Enter complete address"
+                        th:classappend="${#fields.hasErrors('holderAddress')} ? 'error' : ''"></textarea>
+            </div>
+            <span class="error-text" th:if="${#fields.hasErrors('holderAddress')}"
+                  th:errors="*{holderAddress}">Error</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Vehicle Details -->
+      <div class="form-section">
+        <div class="section-title">
+          <span class="section-number">2</span>
+          <span><i class="fas fa-car" style="color: var(--primary);"></i> Vehicle Details</span>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Registration Number <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="fas fa-id-card input-icon"></i>
+              <input type="text" th:field="*{registrationNumber}" placeholder="e.g. GJ-01-AB-1234"
+                     th:classappend="${#fields.hasErrors('registrationNumber')} ? 'error' : ''"/>
+            </div>
+            <span class="error-text" th:if="${#fields.hasErrors('registrationNumber')}"
+                  th:errors="*{registrationNumber}">Error</span>
+          </div>
+
+          <div class="form-group">
+            <label>Vehicle Type <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="fas fa-tag input-icon"></i>
+              <select th:field="*{vehicleType}"
+                      th:classappend="${#fields.hasErrors('vehicleType')} ? 'error' : ''">
+                <option value="">Select Vehicle Type</option>
+                <option th:each="type : ${vehicleTypes}" th:value="${type}" th:text="${type}"></option>
+              </select>
+            </div>
+            <span class="error-text" th:if="${#fields.hasErrors('vehicleType')}"
+                  th:errors="*{vehicleType}">Error</span>
+          </div>
+
+          <div class="form-group">
+            <label>Make / Model <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="fas fa-industry input-icon"></i>
+              <input type="text" th:field="*{vehicleModel}" placeholder="e.g. Honda City 2023"
+                     th:classappend="${#fields.hasErrors('vehicleModel')} ? 'error' : ''"/>
+            </div>
+            <span class="error-text" th:if="${#fields.hasErrors('vehicleModel')}"
+                  th:errors="*{vehicleModel}">Error</span>
+          </div>
+
+          <div class="form-group">
+            <label>Manufacturing Year <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="fas fa-calendar input-icon"></i>
+              <input type="number" th:field="*{vehicleYear}" placeholder="e.g. 2023" min="1990" max="2026"
+                     th:classappend="${#fields.hasErrors('vehicleYear')} ? 'error' : ''"/>
+            </div>
+            <span class="error-text" th:if="${#fields.hasErrors('vehicleYear')}"
+                  th:errors="*{vehicleYear}">Error</span>
+          </div>
+
+          <div class="form-group">
+            <label>Engine Number <span class="optional">Optional</span></label>
+            <div class="input-wrapper">
+              <i class="fas fa-cog input-icon"></i>
+              <input type="text" th:field="*{engineNumber}" placeholder="Engine number"/>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Chassis Number <span class="optional">Optional</span></label>
+            <div class="input-wrapper">
+              <i class="fas fa-vector-square input-icon"></i>
+              <input type="text" th:field="*{chassisNumber}" placeholder="Chassis number"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Policy Coverage -->
+      <div class="form-section">
+        <div class="section-title">
+          <span class="section-number">3</span>
+          <span><i class="fas fa-shield-virus" style="color: var(--primary);"></i> Policy Coverage</span>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Policy Type <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="fas fa-file-contract input-icon"></i>
+              <select th:field="*{policyType}"
+                      th:classappend="${#fields.hasErrors('policyType')} ? 'error' : ''">
+                <option value="">Select Policy Type</option>
+                <option th:each="type : ${policyTypes}" th:value="${type}" th:text="${type}"></option>
+              </select>
+            </div>
+            <span class="error-text" th:if="${#fields.hasErrors('policyType')}"
+                  th:errors="*{policyType}">Error</span>
+          </div>
+
+          <div class="form-group">
+            <label>Insurance Company <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="fas fa-building input-icon"></i>
+              <select th:field="*{insuranceCompany}"
+                      th:classappend="${#fields.hasErrors('insuranceCompany')} ? 'error' : ''">
+                <option value="">Select Company</option>
+                <option th:each="company : ${insuranceCompanies}" th:value="${company}"
+                        th:text="${company}"></option>
+              </select>
+            </div>
+            <span class="error-text" th:if="${#fields.hasErrors('insuranceCompany')}"
+                  th:errors="*{insuranceCompany}">Error</span>
+          </div>
+
+          <div class="form-group">
+            <label>Start Date <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="fas fa-play input-icon"></i>
+              <input type="date" th:field="*{startDate}"
+                     th:classappend="${#fields.hasErrors('startDate')} ? 'error' : ''"/>
+            </div>
+            <span class="error-text" th:if="${#fields.hasErrors('startDate')}"
+                  th:errors="*{startDate}">Error</span>
+          </div>
+
+          <div class="form-group">
+            <label>End Date <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="fas fa-stop input-icon"></i>
+              <input type="date" th:field="*{endDate}"
+                     th:classappend="${#fields.hasErrors('endDate')} ? 'error' : ''"/>
+            </div>
+            <span class="error-text" th:if="${#fields.hasErrors('endDate')}"
+                  th:errors="*{endDate}">Error</span>
+          </div>
+
+          <div class="form-group">
+            <label>Premium Amount (₹) <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="fas fa-rupee-sign input-icon"></i>
+              <input type="number" th:field="*{premiumAmount}" placeholder="0" step="1" min="0"
+                     th:classappend="${#fields.hasErrors('premiumAmount')} ? 'error' : ''"/>
+            </div>
+            <span class="error-text" th:if="${#fields.hasErrors('premiumAmount')}"
+                  th:errors="*{premiumAmount}">Error</span>
+          </div>
+
+          <div class="form-group">
+            <label>Sum Insured (₹) <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <i class="fas fa-coins input-icon"></i>
+              <input type="number" th:field="*{sumInsured}" placeholder="0" step="1" min="0"
+                     th:classappend="${#fields.hasErrors('sumInsured')} ? 'error' : ''"/>
+            </div>
+            <span class="error-text" th:if="${#fields.hasErrors('sumInsured')}"
+                  th:errors="*{sumInsured}">Error</span>
+          </div>
+
+          <div class="form-group full-width">
+            <label>Add-on Covers</label>
+            <div class="checkbox-group">
+              <label th:each="cover : ${addonCovers}">
+                <input type="checkbox" th:field="*{addonCovers}" th:value="${cover}"/>
+                <span th:text="${cover}"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <a href="/insurance/list" class="btn btn-danger">
+          <i class="fas fa-times"></i> Cancel
+        </a>
+        <button type="reset" class="btn btn-secondary">
+          <i class="fas fa-undo"></i> Reset
+        </button>
+        <button type="submit" class="btn btn-primary"
+                th:text="${isEdit} ? 'Update Policy' : 'Submit Policy'">
+          <i class="fas fa-paper-plane"></i> Submit Policy
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+</body>
+</th:block>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Licence Detail — Licence Management System</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
+</head>
+<body class="bg-light">
+
+<div class="container py-4">
+
+    <!-- ── Action bar (hidden in PDF via .no-print) ─────────────────────── -->
+    <div class="d-flex justify-content-between align-items-center mb-4 no-print">
+        <h4 class="mb-0">Licence Detail</h4>
+        <div class="btn-group">
+
+            <!--
+                Option A: Download PDF of entire page HTML.
+                Sends document.documentElement.outerHTML to /api/pdf/from-html.
+            -->
+            <button class="btn btn-outline-secondary btn-sm"
+                    onclick="PdfHelper.downloadFromHtml(null, 'licence-full-page.pdf')">
+                📄 Full Page PDF
+            </button>
+
+            <!--
+                Option B: Download PDF of only the #licenceCard div.
+                Sends the full HTML but tells the backend to extract only that div.
+            -->
+            <button class="btn btn-primary btn-sm"
+                    onclick="PdfHelper.downloadFromDiv('licenceCard', 'licence-[[${licence.licenceNumber}]].pdf')">
+                📋 Licence Card PDF
+            </button>
+
+            <!--
+                Option C: Server-side template rendering.
+                Calls GET /api/pdf/licence/{id} which uses Thymeleaf + the service.
+                Uncomment when you implement the server-side endpoint.
+            -->
+            <!--
+            <button class="btn btn-success btn-sm"
+                    th:onclick="|PdfHelper.downloadFromUrl('/api/pdf/licence/${licence.id}', 'licence-${licence.licenceNumber}.pdf')|">
+                🖨️ Official Certificate
+            </button>
+            -->
+
+        </div>
+    </div>
+
+    <!-- ── Licence card (this div is what gets captured for "Licence Card PDF") ─── -->
+    <div id="licenceCard" class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                Licence # <span th:text="${licence.licenceNumber}">LIC-2024-001</span>
+            </h5>
+            <span class="badge bg-success"
+                  th:classappend="${licence.status == 'ACTIVE'  ? 'bg-success' :
+                                    licence.status == 'EXPIRED' ? 'bg-danger'  :
+                                    licence.status == 'PENDING' ? 'bg-warning text-dark' : 'bg-secondary'}"
+                  th:text="${licence.status}">ACTIVE</span>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="text-muted small text-uppercase fw-bold">Licensee Name</label>
+                    <p class="fw-semibold mb-1" th:text="${licence.licenseeName}">Acme Corp</p>
+                </div>
+                <div class="col-md-6">
+                    <label class="text-muted small text-uppercase fw-bold">Licence Type</label>
+                    <p class="fw-semibold mb-1" th:text="${licence.licenceType}">Commercial</p>
+                </div>
+                <div class="col-md-6">
+                    <label class="text-muted small text-uppercase fw-bold">Issue Date</label>
+                    <p class="mb-1" th:text="${#temporals.format(licence.issueDate, 'dd MMM yyyy')}">01 Jan 2024</p>
+                </div>
+                <div class="col-md-6">
+                    <label class="text-muted small text-uppercase fw-bold">Expiry Date</label>
+                    <p class="mb-1" th:text="${#temporals.format(licence.expiryDate, 'dd MMM yyyy')}">31 Dec 2024</p>
+                </div>
+                <div class="col-12">
+                    <label class="text-muted small text-uppercase fw-bold">Registered Address</label>
+                    <p class="mb-1" th:text="${licence.address}">123 Main Street, Mumbai</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Conditions table ───────────────────────────────────────────────── -->
+    <div id="conditionsTable" class="card shadow-sm mb-4">
+        <div class="card-header fw-bold">Licence Conditions</div>
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Condition</th>
+                        <th>Compliance Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="cond, stat : ${licence.conditions}">
+                        <td th:text="${stat.count}">1</td>
+                        <td th:text="${cond.description}">Must file annual returns</td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${cond.status == 'MET' ? 'bg-success' : 'bg-danger'}"
+                                  th:text="${cond.status}">MET</span>
+                        </td>
+                    </tr>
+                    <!-- Empty state -->
+                    <tr th:if="${licence.conditions == null or licence.conditions.isEmpty()}">
+                        <td colspan="3" class="text-center text-muted py-3">No conditions on record.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- Download button scoped to this section only -->
+        <div class="card-footer text-end no-print">
+            <button class="btn btn-sm btn-outline-primary"
+                    onclick="PdfHelper.downloadFromDiv('conditionsTable', 'conditions.pdf')">
+                ⬇ Download Conditions PDF
+            </button>
+        </div>
+    </div>
+
+</div><!-- /container -->
+
+<!-- ── Scripts ───────────────────────────────────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/PdfHelper.js}"></script>
+
+</body>
+</html>

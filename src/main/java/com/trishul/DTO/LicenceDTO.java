@@ -34,20 +34,27 @@ public class LicenceDTO {
     @PositiveOrZero(message = "Due amount cannot be negative")
     private Long dueAmount;
 
+    @PositiveOrZero(message = "paidAmount amount cannot be negative")
+    private Long paidAmount;
+
+
+
    // @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Invalid date format (use YYYY-MM-DD)")
     private String applydate;
 
     @NotBlank(message = "Vehicle type is required")
     private String vehicleType;
 
-    private Long daysOld;  // Add this field
-    private String licenceType;
+    private Long daysOld;
 
-    public String getLicenceType() {
+    // Add this field
+    private Integer licenceType;
+
+    public Integer getLicenceType() {
         return licenceType;
     }
 
-    public void setLicenceType(String licenceType) {
+    public void setLicenceType(Integer licenceType) {
         this.licenceType = licenceType;
     }
 
@@ -160,12 +167,14 @@ public class LicenceDTO {
         this.vehicleType = vehicleType;
     }
 
+    public void setPaidAmount(@PositiveOrZero(message = "paidAmount amount cannot be negative") Long paidAmount) {
+        this.paidAmount = paidAmount;
+    }
+
     // Helper methods
     public Long getPaidAmount() {
-        if (totalAmount != null && dueAmount != null) {
-            return totalAmount - dueAmount;
-        }
-        return 0L;
+
+        return paidAmount;
     }
 
     public boolean isPaymentComplete() {

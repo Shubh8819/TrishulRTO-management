@@ -50,21 +50,23 @@ public class LicenceController {
 
         double totalDueAmount=licenceService.totalDueAmount();
         String totalDueAmountInstring = UtilClass.formatNumber( totalDueAmount);
+        int totalNumberOfLincence=licenceService.getTotalNumberOfLincence();
 
         model.addAttribute("pageTitle", "Licence Management");
         model.addAttribute("pageSubtitle", "Complete tracking & analytics for driving licences");
         model.addAttribute("activePage", "licences");
-        model.addAttribute("licenceCount", 12);
-        model.addAttribute("totalLicences", 150);
-        model.addAttribute("licencesOver30Days", 25);
-        model.addAttribute("totalDueAmount", 45000);
-        model.addAttribute("totalItems", 150);
-        model.addAttribute("totalPages", 15);
+        model.addAttribute("licenceCount", totalNumberOfLincence);
+        model.addAttribute("totalLicences", 0);
+        model.addAttribute("licencesOver30Days", 0);
+        model.addAttribute("totalDueAmount", totalDueAmountInstring);
+        model.addAttribute("totalItems", totalNumberOfLincence);
+        model.addAttribute("totalPages", totalNumberOfLincence/size);
         model.addAttribute("currentPage", page);
         model.addAttribute("licences", licencePage);
         model.addAttribute("pageSize", size);
         model.addAttribute("startRecord", page * size + 1);
         model.addAttribute("endRecord", Math.min((page + 1) * size, 150));
+
 
         model.addAttribute("pageContent", "licence/licence_list");
        // model.addAttribute("pageContent", "licence/dashboard");
@@ -108,7 +110,8 @@ public class LicenceController {
         LicenceDTO licenceDTO = licenceMapper.toDTO(entity);
         model.addAttribute("licence", licenceDTO);
         model.addAttribute("pageTitle", "Edit Licence");
-        return "licence/licence_form";
+       model.addAttribute("pageContent", "licence/licence_form");
+       return "fragments/layout";
     }
 
    @PostMapping("/update/{id}")
@@ -127,10 +130,27 @@ public class LicenceController {
         return "redirect:/licence/list";
     }
 
-   @GetMapping("/delete/{id}")
+   @PostMapping("/delete/{id}")
     public String deleteLicence(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         licenceService.deleteLicence(id);
         redirectAttributes.addFlashAttribute("message", "Licence deleted successfully!");
         return "redirect:/licence/list";
+    }
+    // View Licence (Read-Only)
+    @GetMapping("/view/{id}")
+    public String showViewForm(@PathVariable Long id, Model model) {
+        LicenceEntity entity = licenceService.getLicenceById(id).orElse(null);
+        LicenceDTO licenceDTO = licenceMapper.toDTO(entity);
+
+        // Set default values if null
+
+
+        model.addAttribute("licence", licenceDTO);
+        model.addAttribute("pageTitle", "View Licence");
+        model.addAttribute("pageSubtitle", "View complete licence details");
+        model.addAttribute("activePage", "licences");
+        model.addAttribute("pageContent", "licence/licence_view");
+
+        return "fragments/layout";
     }
 }

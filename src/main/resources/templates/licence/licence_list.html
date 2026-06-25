@@ -957,7 +957,7 @@
           <span class="stat-label">Total Licences</span>
           <div class="stat-icon blue"><i class="fas fa-id-card"></i></div>
         </div>
-        <div class="stat-value" th:text="${totalLicences}">0</div>
+        <div class="stat-value" th:text="${licenceCount}">0</div>
       </div>
 
       <div class="stat-card">
@@ -1063,15 +1063,18 @@
                                     </span>
               </div>
             </td>
-            <td><code th:text="${licence.leaningLinceNo}">L-001</code></td>
+            <td><code th:text="${licence.divingLincence}">L-001</code></td>
             <td>
-                                <span class="badge"
-                                      th:class="${licence.licenceType != null ?
-                                                 (licence.licenceType == 'Learning' ? 'badge-info' :
-                                                 (licence.licenceType == 'DL' ? 'badge-success' :
-                                                 (licence.licenceType == 'Renewal' ? 'badge-warning' : 'badge-danger'))) : 'badge-info'}">
-                                    <span th:text="${licence.licenceType != null ? licence.licenceType : 'Learning'}">Learning</span>
-                                </span>
+                              <span th:switch="${licence.licenceType}" class="badge">
+    <span th:case="0" class="badge badge-info" th:text="'Learning'">Learning</span>
+    <span th:case="1" class="badge badge-success" th:text="'Permanent Driving Licence (DL)'">Permanent Driving Licence (DL)</span>
+    <span th:case="2" class="badge badge-warning" th:text="'Renewal'">Renewal</span>
+    <span th:case="3" class="badge badge-danger" th:text="'Duplicate Licence'">Duplicate Licence</span>
+    <span th:case="4" class="badge badge-primary" th:text="'International Driving Permit'">International Driving Permit</span>
+    <span th:case="5" class="badge badge-secondary" th:text="'Licence Add/Remove Classes'">Licence Add/Remove Classes</span>
+    <span th:case="*" class="badge badge-info" th:text="'Not Selected'">Not Selected</span>
+</span>
+
             </td>
             <td th:text="${licence.mobNumber}">9876543210</td>
             <td th:text="${licence.vehicleType}">2 Wheeler</td>
@@ -1103,9 +1106,9 @@
             </td>
             <td>
               <div class="action-btns">
-                <button class="action-btn view" onclick="viewDetails(this)" title="View Details">
+                <a th:href="@{/licence/view/{id}(id=${licence.liId})}" class="action-btn edit" title="Edit">
                   <i class="fas fa-eye"></i>
-                </button>
+                </a>
                 <a th:href="@{/licence/edit/{id}(id=${licence.liId})}" class="action-btn edit" title="Edit">
                   <i class="fas fa-edit"></i>
                 </a>

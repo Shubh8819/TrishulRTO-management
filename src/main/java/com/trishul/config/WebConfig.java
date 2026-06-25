@@ -18,6 +18,6 @@ public class WebConfig implements WebMvcConfigurer {
         // Explicitly handle WEB-INF for JSP
         registry.addResourceHandler("/WEB-INF/**")
                 .addResourceLocations("/WEB-INF/")
-                .resourceChain(false);
+                .resourceChain(false);//
     }
 }

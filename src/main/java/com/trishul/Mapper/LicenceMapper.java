@@ -24,6 +24,8 @@ public class LicenceMapper {
         dto.setDueAmount(entity.getDueAmount());
         dto.setApplydate(entity.getApplydate());
         dto.setVehicleType(entity.getVehicleType());
+        dto.setPaidAmount(entity.getPaidAmount());
+        dto.setLicenceType(entity.getLicenceType());
 
         return dto;
     }
@@ -45,6 +47,8 @@ public class LicenceMapper {
         entity.setDueAmount(dto.getDueAmount());
         entity.setApplydate(dto.getApplydate());
         entity.setVehicleType(dto.getVehicleType());
+        entity.setPaidAmount(dto.getPaidAmount());
+        entity.setLicenceType(dto.getLicenceType());
 
         return entity;
     }

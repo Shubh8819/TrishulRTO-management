@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="pageContent">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="${pageTitle}">View Licence</title>
+
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+        <style>
+            :root {
+                --primary: #1a237e;
+                --primary-light: #283593;
+                --primary-dark: #0d1445;
+                --success: #2e7d32;
+                --danger: #c62828;
+                --warning: #e65100;
+                --info: #00838f;
+                --text-primary: #1a2332;
+                --text-secondary: #4a5568;
+                --text-muted: #718096;
+                --border-color: #e2e8f0;
+                --bg-light: #f7fafc;
+                --bg-white: #ffffff;
+                --shadow-xl: 0 20px 60px rgba(0,0,0,0.12);
+                --radius-sm: 6px;
+                --radius-md: 10px;
+                --radius-lg: 14px;
+                --radius-xl: 20px;
+                --radius-full: 9999px;
+                --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+
+            body {
+                font-family: 'Inter', -apple-system, sans-serif;
+                background: #eef2f7;
+                min-height: 100vh;
+                padding: 30px 20px;
+            }
+
+            .view-container {
+                max-width: 950px;
+                margin: 0 auto;
+                background: var(--bg-white);
+                border-radius: var(--radius-xl);
+                padding: 40px 50px;
+                box-shadow: var(--shadow-xl);
+                animation: slideUp 0.5s ease;
+            }
+
+            @keyframes slideUp {
+                from { opacity: 0; transform: translateY(30px); }
+                to   { opacity: 1; transform: translateY(0); }
+            }
+
+            /* ── Header ──────────────────────────────────────── */
+            .view-header {
+                padding-bottom: 25px;
+                border-bottom: 2px solid var(--bg-light);
+                margin-bottom: 30px;
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .view-header h1 {
+                font-size: 26px;
+                font-weight: 800;
+                color: var(--text-primary);
+                letter-spacing: -0.5px;
+            }
+
+            .view-header h1 small {
+                font-size: 14px;
+                font-weight: 400;
+                color: var(--text-muted);
+                display: block;
+                margin-top: 4px;
+            }
+
+            .status-badge {
+                padding: 8px 20px;
+                border-radius: var(--radius-full);
+                font-size: 13px;
+                font-weight: 600;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .status-badge.paid    { background: #e8f5e9; color: var(--success); }
+            .status-badge.partial { background: #fff3e0; color: var(--warning); }
+            .status-badge.pending { background: #ffebee; color: var(--danger);  }
+
+            /* ── Sections ────────────────────────────────────── */
+            .view-section {
+                background: var(--bg-light);
+                border-radius: var(--radius-md);
+                padding: 24px 28px;
+                margin-bottom: 24px;
+                border: 1px solid var(--border-color);
+            }
+
+            .section-title {
+                font-size: 15px;
+                font-weight: 700;
+                color: var(--text-primary);
+                margin-bottom: 18px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .section-number {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 26px; height: 26px;
+                background: var(--primary);
+                color: white;
+                border-radius: 50%;
+                font-size: 12px;
+                font-weight: 700;
+                flex-shrink: 0;
+            }
+
+            .section-icon { color: var(--primary); font-size: 16px; }
+
+            /* ── Field grid ──────────────────────────────────── */
+            .view-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+
+            .view-item {
+                display: flex;
+                flex-direction: column;
+                padding: 8px 0;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .view-item.full-width { grid-column: 1 / -1; }
+
+            .view-item .label {
+                font-size: 12px;
+                font-weight: 600;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .view-item .value {
+                font-size: 15px;
+                font-weight: 600;
+                color: var(--text-primary);
+                margin-top: 4px;
+            }
+
+            .view-item .value code {
+                background: var(--bg-white);
+                padding: 2px 10px;
+                border-radius: var(--radius-sm);
+                font-size: 14px;
+            }
+
+            /* Badges */
+            .badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                padding: 4px 14px;
+                border-radius: var(--radius-full);
+                font-size: 12px;
+                font-weight: 600;
+            }
+
+            .badge-success  { background: #e8f5e9; color: var(--success); }
+            .badge-warning  { background: #fff3e0; color: var(--warning); }
+            .badge-danger   { background: #ffebee; color: var(--danger);  }
+            .badge-info     { background: #e3f2fd; color: var(--info);    }
+
+            .badge-licence-type {
+                padding: 4px 12px;
+                border-radius: var(--radius-full);
+                font-size: 11px;
+                font-weight: 600;
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+            }
+            .badge-licence-type.learning  { background: #dbeafe; color: #1e40af; }
+            .badge-licence-type.dl        { background: #d1fae5; color: #065f46; }
+            .badge-licence-type.renewal   { background: #fef3c7; color: #92400e; }
+            .badge-licence-type.duplicate { background: #fce7f3; color: #9d174d; }
+
+            /* ── Payment summary ─────────────────────────────── */
+            .payment-summary {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 15px;
+                margin-top: 15px;
+            }
+
+            .payment-item {
+                text-align: center;
+                padding: 15px;
+                background: var(--bg-white);
+                border-radius: var(--radius-sm);
+                border: 1px solid var(--border-color);
+            }
+
+            .payment-item .label {
+                font-size: 11px;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .payment-item .value {
+                font-size: 20px;
+                font-weight: 700;
+                color: var(--text-primary);
+                margin-top: 4px;
+            }
+
+            .payment-item .value.success { color: var(--success); }
+            .payment-item .value.danger  { color: var(--danger);  }
+            .payment-item .value.warning { color: var(--warning); }
+
+            /* ── Actions ─────────────────────────────────────── */
+            .view-actions {
+                display: flex;
+                gap: 14px;
+                justify-content: space-between;
+                margin-top: 10px;
+                padding-top: 25px;
+                border-top: 2px solid var(--bg-light);
+                flex-wrap: wrap;
+            }
+
+            .download-group { display: flex; gap: 10px; flex-wrap: wrap; }
+
+            .btn {
+                padding: 11px 24px;
+                border: none;
+                border-radius: var(--radius-sm);
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 14px;
+                transition: var(--transition);
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                font-family: 'Inter', sans-serif;
+                text-decoration: none;
+            }
+
+            .btn-primary   { background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(26,35,126,0.25); }
+            .btn-secondary { background: var(--bg-light); color: var(--text-secondary); border: 2px solid var(--border-color); }
+            .btn-success   { background: var(--success); color: white; }
+            .btn-danger    { background: var(--danger);  color: white; }
+            .btn-warning   { background: var(--warning); color: white; }
+            .btn-info      { background: var(--info);    color: white; }
+
+            .btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+
+            /* ── PDF Loading overlay ─────────────────────────── */
+            .pdf-loader-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.6);
+                align-items: center;
+                justify-content: center;
+                z-index: 99999;
+            }
+            .pdf-loader-overlay.active { display: flex; }
+
+            .pdf-loader-box {
+                background: white;
+                padding: 32px 44px;
+                border-radius: 14px;
+                text-align: center;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            }
+
+            .pdf-loader-box .icon { font-size: 48px; margin-bottom: 12px; }
+            .pdf-loader-box .title { font-size: 18px; font-weight: 700; color: #1a2332; margin-bottom: 4px; }
+            .pdf-loader-box .sub   { font-size: 13px; color: #718096; margin-bottom: 18px; }
+
+            .progress-track {
+                width: 280px; height: 5px;
+                background: #e2e8f0;
+                border-radius: 3px;
+                overflow: hidden;
+                margin: 0 auto;
+            }
+            .progress-fill {
+                height: 100%;
+                background: linear-gradient(90deg, #1a237e, #ff6f00);
+                border-radius: 3px;
+                animation: bar 2.2s ease-in-out infinite;
+            }
+            @keyframes bar {
+                0%   { width: 0%; }
+                60%  { width: 75%; }
+                100% { width: 100%; }
+            }
+
+            /* ── Responsive ──────────────────────────────────── */
+            @media (max-width: 768px) {
+                .view-container { padding: 20px 18px; border-radius: var(--radius-lg); }
+                .view-grid { grid-template-columns: 1fr; }
+                .view-item.full-width { grid-column: 1; }
+                .view-header { flex-direction: column; }
+                .payment-summary { grid-template-columns: 1fr 1fr; }
+                .view-actions { flex-direction: column; }
+                .btn { justify-content: center; }
+                .download-group { flex-direction: column; }
+            }
+
+            @media (max-width: 480px) {
+                .payment-summary { grid-template-columns: 1fr; }
+            }
+        </style>
+    </head>
+
+    <body>
+
+    <!-- Loading Overlay -->
+    <div class="pdf-loader-overlay" id="pdfLoader">
+        <div class="pdf-loader-box">
+            <div class="icon">📄</div>
+            <div class="title">Generating PDF…</div>
+            <div class="sub">Please wait while we prepare your document</div>
+            <div class="progress-track"><div class="progress-fill"></div></div>
+            <div style="margin-top:12px; font-size:12px; color:#a0aec0;">This may take a few moments</div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════ MAIN CARD ════════════════════════ -->
+    <div class="">
+
+        <!-- Header -->
+        <div class="view-header">
+            <div class="title-section">
+                <h1>View Licence Application
+                    <small>Complete details of the licence application</small>
+                </h1>
+            </div>
+
+            <!-- Status badge driven by payment -->
+            <span class="status-badge"
+                  th:classappend="${(licence.dueAmount == null or licence.totalAmount == null) ? 'pending' :
+                                licence.dueAmount == 0 ? 'paid' :
+                                licence.dueAmount < licence.totalAmount ? 'partial' : 'pending'}">
+            <i class="fas"
+               th:classappend="${(licence.dueAmount == null or licence.totalAmount == null) ? 'fa-clock' :
+                                  licence.dueAmount == 0 ? 'fa-check-circle' :
+                                  licence.dueAmount < licence.totalAmount ? 'fa-clock' : 'fa-times-circle'}"></i>
+            <span th:text="${(licence.dueAmount == null or licence.totalAmount == null) ? 'Pending' :
+                              licence.dueAmount == 0 ? 'Paid' :
+                              licence.dueAmount < licence.totalAmount ? 'Partial Payment' : 'Pending'}">Pending</span>
+        </span>
+        </div>
+
+        <!-- ── Section 1: Personal ──────────────────────────────── -->
+        <div class="view-section">
+            <div class="section-title">
+                <span class="section-number">1</span>
+                <i class="fas fa-user-circle section-icon"></i> Personal Details
+            </div>
+            <div class="view-grid">
+                <div class="view-item">
+                    <span class="label">Full Name</span>
+                    <span class="value" th:text="${licence.customerName}">—</span>
+                </div>
+                <div class="view-item">
+                    <span class="label">Father's Name</span>
+                    <span class="value" th:text="${licence.father}">—</span>
+                </div>
+                <div class="view-item">
+                    <span class="label">Mobile Number</span>
+                    <span class="value" th:text="${licence.mobNumber}">—</span>
+                </div>
+                <div class="view-item">
+                    <span class="label">Application Date</span>
+                    <span class="value" th:text="${licence.applydate}">—</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Section 2: Licence ───────────────────────────────── -->
+        <div class="view-section">
+            <div class="section-title">
+                <span class="section-number">2</span>
+                <i class="fas fa-id-card section-icon"></i> Licence Details
+            </div>
+            <div class="view-grid">
+                <div class="view-item">
+                    <span class="label">Licence Type</span>
+                    <span class="value">
+                    <span class="badge-licence-type"
+                          th:classappend="${licence.licenceType == 'Learning Licence (LL)'          ? 'learning'  :
+                                            licence.licenceType == 'Permanent Driving Licence (DL)' ? 'dl'        :
+                                            licence.licenceType == 'Licence Renewal'                ? 'renewal'   : 'duplicate'}"
+                          th:text="${licence.licenceType}">—</span>
+                </span>
+                </div>
+                <div class="view-item">
+                    <span class="label">Licence Number</span>
+                    <span class="value">
+                    <code th:text="${licence.leaningLinceNo != null ? licence.leaningLinceNo : '—'}">—</code>
+                </span>
+                </div>
+                <div class="view-item">
+                    <span class="label">Driving Licence No</span>
+                    <span class="value"
+                          th:text="${licence.divingLincence != null and !#strings.isEmpty(licence.divingLincence)
+                                  ? licence.divingLincence : 'Not Issued Yet'}"
+                          th:style="${licence.divingLincence == null or #strings.isEmpty(licence.divingLincence)
+                                  ? 'color: var(--text-muted); font-weight:400;' : ''}">—</span>
+                </div>
+                <div class="view-item">
+                    <span class="label">Vehicle Type</span>
+                    <span class="value">
+                    <span class="badge"
+                          th:classappend="${licence.vehicleType == '2 Wheeler'    ? 'badge-info'    :
+                                            licence.vehicleType == '4 Wheeler'    ? 'badge-success' :
+                                            licence.vehicleType == '3 Wheeler'    ? 'badge-warning' : 'badge-danger'}"
+                          th:text="${licence.vehicleType}">—</span>
+                </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Section 3: Payment ───────────────────────────────── -->
+        <div class="view-section">
+            <div class="section-title">
+                <span class="section-number">3</span>
+                <i class="fas fa-rupee-sign section-icon"></i> Payment Details
+            </div>
+            <div class="payment-summary">
+                <div class="payment-item">
+                    <div class="label">Total Amount</div>
+                    <div class="value">
+                        ₹<span th:text="${licence.totalAmount != null ? licence.totalAmount : 0}">0</span>
+                    </div>
+                </div>
+                <div class="payment-item">
+                    <div class="label">Paid Amount</div>
+                    <!-- Paid = totalAmount - dueAmount  (dueAmount is the balance remaining) -->
+                    <div class="value success">
+                        ₹<span th:text="${(licence.totalAmount != null and licence.dueAmount != null)
+                                       ? (licence.totalAmount - licence.dueAmount) : 0}">0</span>
+                    </div>
+                </div>
+                <div class="payment-item">
+                    <div class="label">Due Amount</div>
+                    <div class="value danger">
+                        ₹<span th:text="${licence.dueAmount != null ? licence.dueAmount : 0}">0</span>
+                    </div>
+                </div>
+                <div class="payment-item">
+                    <div class="label">Payment Status</div>
+                    <div class="value"
+                         th:classappend="${(licence.dueAmount == null or licence.totalAmount == null) ? 'danger' :
+                                       licence.dueAmount == 0 ? 'success' :
+                                       licence.dueAmount < licence.totalAmount ? 'warning' : 'danger'}"
+                         th:text="${(licence.dueAmount == null or licence.totalAmount == null) ? 'Pending' :
+                                 licence.dueAmount == 0 ? 'Paid' :
+                                 licence.dueAmount < licence.totalAmount ? 'Partial' : 'Pending'}">
+                        Pending
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Actions ──────────────────────────────────────────── -->
+        <div class="view-actions no-print">
+            <div class="download-group">
+                <button class="btn btn-danger" onclick="generatePDF()">
+                    <i class="fas fa-file-pdf"></i> Download PDF
+                </button>
+                <button class="btn btn-info" onclick="window.print()">
+                    <i class="fas fa-print"></i> Print
+                </button>
+                <a th:href="@{/licence/download-word/{id}(id=${licence.liId})}"  class="btn btn-success" target="_blank">
+                    <i class="fas fa-file-word"></i> Word
+                </a>
+                <a th:href="@{/licence/download-excel/{id}(id=${licence.liId})}" class="btn btn-warning" target="_blank">
+                    <i class="fas fa-file-excel"></i> Excel
+                </a>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <a th:href="@{/licence/edit/{id}(id=${licence.liId})}" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <a th:href="@{/licence/list}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+    </div><!-- /view-container -->
+
+
+    <!-- ═══════════════════════ PDF TEMPLATE ═══════════════════════
+         Hidden div — this is what html2pdf renders.
+         All CSS is INLINE here: no CDN, no variables, no external fonts.
+         Values are injected by Thymeleaf at render time.
+    ════════════════════════════════════════════════════════════════ -->
+    <div id="pdfTemplate" style="display:none;">
+
+        <!-- All th: attributes still work here because this IS Thymeleaf output.
+             html2pdf reads the rendered DOM — no server round-trip needed.        -->
+        <div id="pdfContent" style="
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 11px;
+        color: #1a2332;
+        background: #ffffff;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+    ">
+
+            <!-- ── PDF Header ── -->
+            <div style="
+            background-color: #1a237e;
+            color: #ffffff;
+            padding: 20px 24px;
+            border-radius: 6px 6px 0 0;
+            margin-bottom: 0;
+        ">
+                <table style="width:100%; border-collapse:collapse;">
+                    <tr>
+                        <td style="vertical-align:middle;">
+                            <div style="font-size:18px; font-weight:900; color:#ffffff; margin-bottom:3px;">
+                                Licence Application
+                            </div>
+                            <div style="font-size:10px; color:#c5cae9;">
+                                Complete details of the licence application
+                            </div>
+                        </td>
+                        <td style="vertical-align:middle; text-align:right; width:160px;">
+                        <span style="
+                            display:inline-block;
+                            padding:5px 14px;
+                            border-radius:20px;
+                            font-size:10px;
+                            font-weight:700;
+                            text-transform:uppercase;
+                            letter-spacing:0.5px;"
+                              th:style="${(licence.dueAmount == null or licence.totalAmount == null)
+                                          ? 'background:#fce4ec; color:#880e4f;' :
+                                          licence.dueAmount == 0
+                                          ? 'background:#e8f5e9; color:#1b5e20;' :
+                                          licence.dueAmount < licence.totalAmount
+                                          ? 'background:#fff8e1; color:#e65100;' : 'background:#fce4ec; color:#880e4f;'}"
+                              th:text="${(licence.dueAmount == null or licence.totalAmount == null) ? 'Pending' :
+                                         licence.dueAmount == 0 ? 'Paid' :
+                                         licence.dueAmount < licence.totalAmount ? 'Partial' : 'Pending'}">
+                            Pending
+                        </span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Application ID bar -->
+            <div style="
+            background-color:#e8eaf6;
+            border-left:4px solid #1a237e;
+            padding:8px 16px;
+            margin-bottom:16px;
+            font-size:10px;
+            color:#3949ab;
+            font-weight:600;
+        ">
+                Application ID:
+                <span th:text="${licence.liId != null ? '#' + licence.liId : 'New Application'}">—</span>
+                &nbsp;|&nbsp;
+                Applied on:
+                <span th:text="${licence.applydate != null ? licence.applydate : '—'}">—</span>
+            </div>
+
+            <!-- ── Section 1: Personal ── -->
+            <div style="
+            border:1px solid #e2e8f0;
+            border-radius:6px;
+            margin-bottom:14px;
+            overflow:hidden;
+            page-break-inside:avoid;
+        ">
+                <div style="background-color:#283593; color:#ffffff; padding:8px 16px;">
+                    <table style="border-collapse:collapse; width:100%;">
+                        <tr>
+                            <td style="width:30px; vertical-align:middle;">
+                            <span style="
+                                display:inline-block; width:20px; height:20px;
+                                background:#ffffff; color:#1a237e;
+                                border-radius:50%; text-align:center;
+                                line-height:20px; font-size:10px; font-weight:800;">1</span>
+                            </td>
+                            <td style="font-size:11px; font-weight:700; vertical-align:middle;">
+                                Personal Details
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="padding:14px 16px; background:#ffffff;">
+                    <table style="width:100%; border-collapse:collapse;">
+                        <tr>
+                            <td style="width:50%; vertical-align:top; padding:6px 12px 6px 0; border-bottom:1px solid #f0f4f8;">
+                                <div style="font-size:8px; font-weight:700; color:#718096; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:2px;">Full Name</div>
+                                <div style="font-size:11px; font-weight:600; color:#1a2332;" th:text="${licence.customerName}">—</div>
+                            </td>
+                            <td style="width:50%; vertical-align:top; padding:6px 0 6px 12px; border-bottom:1px solid #f0f4f8; border-left:1px solid #f0f4f8;">
+                                <div style="font-size:8px; font-weight:700; color:#718096; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:2px;">Father's Name</div>
+                                <div style="font-size:11px; font-weight:600; color:#1a2332;" th:text="${licence.father}">—</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:50%; vertical-align:top; padding:6px 12px 6px 0;">
+                                <div style="font-size:8px; font-weight:700; color:#718096; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:2px;">Mobile Number</div>
+                                <div style="font-size:11px; font-weight:600; color:#1a2332;" th:text="${licence.mobNumber}">—</div>
+                            </td>
+                            <td style="width:50%; vertical-align:top; padding:6px 0 6px 12px; border-left:1px solid #f0f4f8;">
+                                <div style="font-size:8px; font-weight:700; color:#718096; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:2px;">Application Date</div>
+                                <div style="font-size:11px; font-weight:600; color:#1a2332;" th:text="${licence.applydate}">—</div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── Section 2: Licence ── -->
+            <div style="
+            border:1px solid #e2e8f0;
+            border-radius:6px;
+            margin-bottom:14px;
+            overflow:hidden;
+            page-break-inside:avoid;
+        ">
+                <div style="background-color:#283593; color:#ffffff; padding:8px 16px;">
+                    <table style="border-collapse:collapse; width:100%;">
+                        <tr>
+                            <td style="width:30px; vertical-align:middle;">
+                            <span style="
+                                display:inline-block; width:20px; height:20px;
+                                background:#ffffff; color:#1a237e;
+                                border-radius:50%; text-align:center;
+                                line-height:20px; font-size:10px; font-weight:800;">2</span>
+                            </td>
+                            <td style="font-size:11px; font-weight:700; vertical-align:middle;">
+                                Licence Details
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="padding:14px 16px; background:#ffffff;">
+                    <table style="width:100%; border-collapse:collapse;">
+                        <tr>
+                            <td style="width:50%; vertical-align:top; padding:6px 12px 6px 0; border-bottom:1px solid #f0f4f8;">
+                                <div style="font-size:8px; font-weight:700; color:#718096; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:2px;">Licence Type</div>
+                                <div style="font-size:11px; font-weight:600; color:#1a2332;" th:text="${licence.licenceType}">—</div>
+                            </td>
+                            <td style="width:50%; vertical-align:top; padding:6px 0 6px 12px; border-bottom:1px solid #f0f4f8; border-left:1px solid #f0f4f8;">
+                                <div style="font-size:8px; font-weight:700; color:#718096; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:2px;">Licence Number</div>
+                                <div style="font-size:11px; font-weight:600; color:#1a2332;"
+                                     th:text="${licence.leaningLinceNo != null ? licence.leaningLinceNo : '—'}">—</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:50%; vertical-align:top; padding:6px 12px 6px 0;">
+                                <div style="font-size:8px; font-weight:700; color:#718096; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:2px;">Driving Licence No</div>
+                                <div style="font-size:11px; font-weight:600;"
+                                     th:style="${licence.divingLincence == null or #strings.isEmpty(licence.divingLincence)
+                                             ? 'color:#a0aec0; font-weight:400;' : 'color:#1a2332;'}"
+                                     th:text="${licence.divingLincence != null and !#strings.isEmpty(licence.divingLincence)
+                                            ? licence.divingLincence : 'Not Issued Yet'}">—</div>
+                            </td>
+                            <td style="width:50%; vertical-align:top; padding:6px 0 6px 12px; border-left:1px solid #f0f4f8;">
+                                <div style="font-size:8px; font-weight:700; color:#718096; text-transform:uppercase; letter-spacing:0.6px; margin-bottom:2px;">Vehicle Type</div>
+                                <div style="font-size:11px; font-weight:600; color:#1a2332;" th:text="${licence.vehicleType}">—</div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── Section 3: Payment ── -->
+            <div style="
+            border:1px solid #e2e8f0;
+            border-radius:6px;
+            margin-bottom:14px;
+            overflow:hidden;
+            page-break-inside:avoid;
+        ">
+                <div style="background-color:#283593; color:#ffffff; padding:8px 16px;">
+                    <table style="border-collapse:collapse; width:100%;">
+                        <tr>
+                            <td style="width:30px; vertical-align:middle;">
+                            <span style="
+                                display:inline-block; width:20px; height:20px;
+                                background:#ffffff; color:#1a237e;
+                                border-radius:50%; text-align:center;
+                                line-height:20px; font-size:10px; font-weight:800;">3</span>
+                            </td>
+                            <td style="font-size:11px; font-weight:700; vertical-align:middle;">
+                                Payment Details
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="padding:0; background:#ffffff;">
+                    <table style="width:100%; border-collapse:collapse;">
+                        <tr>
+                            <td style="width:25%; text-align:center; padding:14px 8px; border-right:1px solid #e2e8f0;">
+                                <div style="font-size:8px; color:#718096; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Total Amount</div>
+                                <div style="font-size:16px; font-weight:800; color:#1a237e;">
+                                    &#8377;<span th:text="${licence.totalAmount != null ? licence.totalAmount : 0}">0</span>
+                                </div>
+                            </td>
+                            <td style="width:25%; text-align:center; padding:14px 8px; border-right:1px solid #e2e8f0;">
+                                <div style="font-size:8px; color:#718096; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Paid Amount</div>
+                                <div style="font-size:16px; font-weight:800; color:#2e7d32;">
+                                    &#8377;<span th:text="${(licence.totalAmount != null and licence.dueAmount != null)
+                                                        ? (licence.totalAmount - licence.dueAmount) : 0}">0</span>
+                                </div>
+                            </td>
+                            <td style="width:25%; text-align:center; padding:14px 8px; border-right:1px solid #e2e8f0;">
+                                <div style="font-size:8px; color:#718096; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Due Amount</div>
+                                <div style="font-size:16px; font-weight:800; color:#c62828;">
+                                    &#8377;<span th:text="${licence.dueAmount != null ? licence.dueAmount : 0}">0</span>
+                                </div>
+                            </td>
+                            <td style="width:25%; text-align:center; padding:14px 8px;">
+                                <div style="font-size:8px; color:#718096; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Status</div>
+                                <div style="font-size:13px; font-weight:800;"
+                                     th:style="${(licence.dueAmount == null or licence.totalAmount == null) ? 'color:#e65100;' :
+                                             licence.dueAmount == 0 ? 'color:#2e7d32;' :
+                                             licence.dueAmount < licence.totalAmount ? 'color:#e65100;' : 'color:#c62828;'}"
+                                     th:text="${(licence.dueAmount == null or licence.totalAmount == null) ? 'Pending' :
+                                            licence.dueAmount == 0 ? 'Paid' :
+                                            licence.dueAmount < licence.totalAmount ? 'Partial' : 'Pending'}">
+                                    Pending
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── Signature block ── -->
+            <div style="margin-top:28px;">
+                <table style="width:100%; border-collapse:collapse;">
+                    <tr>
+                        <td style="width:38%; text-align:center; padding:0 16px;">
+                            <div style="border-top:1px solid #4a5568; padding-top:6px; font-size:9px; color:#4a5568;">
+                                Applicant Signature
+                            </div>
+                        </td>
+                        <td style="width:24%;"></td>
+                        <td style="width:38%; text-align:center; padding:0 16px;">
+                            <div style="border-top:1px solid #4a5568; padding-top:6px; font-size:9px; color:#4a5568;">
+                                RTO Officer Signature
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- ── Footer ── -->
+            <div style="
+            margin-top:20px;
+            padding-top:12px;
+            border-top:1px solid #e2e8f0;
+            text-align:center;
+            font-size:8px;
+            color:#a0aec0;
+        ">
+                This is a system-generated document &nbsp;|&nbsp;
+                Licence Management System &nbsp;|&nbsp;
+                Application #<span th:text="${licence.liId != null ? licence.liId : 'N/A'}">N/A</span>
+            </div>
+
+        </div><!-- /pdfContent -->
+    </div><!-- /pdfTemplate -->
+
+
+    <script>
+        /**
+         * generatePDF()
+         *
+         * Reads #pdfContent (hidden div with Thymeleaf-rendered data + inline styles),
+         * then uses html2pdf.js to render it client-side into a proper A4 PDF.
+         *
+         * Why this works vs. the old approach:
+         *  - Old: sent outerHTML to Java backend → OpenHTMLtoPDF tried to load CDN CSS → failed
+         *  - New: html2pdf runs in the browser → full DOM access → all inline styles render correctly
+         *        The hidden #pdfContent has ONLY inline styles, so no external dependency issues.
+         */
+        function generatePDF() {
+            const content = document.getElementById('pdfContent');
+            if (!content) { alert('PDF content not found.'); return; }
+
+            // Show loader
+            document.getElementById('pdfLoader').classList.add('active');
+
+            // Derive filename from customer name if available
+            const nameEl = content.querySelector('[data-field="customerName"]');
+            const filename = 'licence-' + (new Date().toISOString().slice(0,10)) + '.pdf';
+
+            const opt = {
+                margin:      [8, 8, 8, 8],          // top, right, bottom, left  (mm)
+                filename:    filename,
+                image:       { type: 'jpeg', quality: 0.98 },
+                html2canvas: {
+                    scale:          2,               // 2x = crisp on retina
+                    useCORS:        true,
+                    logging:        false,
+                    backgroundColor: '#ffffff'
+                },
+                jsPDF: {
+                    unit:        'mm',
+                    format:      'a4',
+                    orientation: 'portrait'
+                },
+                pagebreak: { mode: ['avoid-all', 'css'] }
+            };
+
+            // Make content temporarily visible for html2canvas capture
+            content.parentElement.style.display = 'block';
+            content.parentElement.style.position = 'absolute';
+            content.parentElement.style.left = '-9999px';
+            content.parentElement.style.top  = '0';
+
+            html2pdf()
+                .set(opt)
+                .from(content)
+                .save()
+                .then(() => {
+                    content.parentElement.style.display = 'none';
+                    document.getElementById('pdfLoader').classList.remove('active');
+                })
+                .catch(err => {
+                    content.parentElement.style.display = 'none';
+                    document.getElementById('pdfLoader').classList.remove('active');
+                    console.error('PDF error:', err);
+                    alert('PDF generation failed: ' + err.message);
+                });
+        }
+
+        // Ctrl+P → PDF instead of browser print dialog
+        document.addEventListener('keydown', e => {
+            if (e.ctrlKey && e.key === 'p') { e.preventDefault(); generatePDF(); }
+            if (e.key === 'Escape') {
+                const back = document.querySelector('a[href*="/licence/list"]');
+                if (back) back.click();
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</th:block>
+</html>
