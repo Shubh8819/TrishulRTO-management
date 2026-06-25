@@ -1,6 +1,7 @@
 package com.trishul.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.PositiveOrZero;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +43,26 @@ public class LicenceEntity {
 
     @Column(name = "vehicleType")
     private String vehicleType;
+
+    @Column(name = "licenceTypes", columnDefinition = "int default -1")
+    private Integer licenceType =-1;
+
+
     @OneToMany(mappedBy = "licence", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<DocumentEntity> documents = new ArrayList<>();
+
+    @Column(name = "paidAmount")
+    Long paidAmount;
+
+    public void setPaidAmount(@PositiveOrZero(message = "paidAmount amount cannot be negative") Long paidAmount) {
+        this.paidAmount = paidAmount;
+    }
+
+    // Helper methods
+    public Long getPaidAmount() {
+
+        return paidAmount;
+    }
 
     // Getters and Setters
     public List<DocumentEntity> getDocuments() { return documents; }
@@ -135,6 +154,14 @@ public class LicenceEntity {
 
     public void setApplydate(String applydate) {
         this.applydate = applydate;
+    }
+
+    public Integer getLicenceType() {
+        return licenceType;
+    }
+
+    public void setLicenceType(Integer licenceType) {
+        this.licenceType = licenceType ;
     }
 
     public String getVehicleType() {

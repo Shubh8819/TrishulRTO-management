@@ -44,7 +44,9 @@ public interface LicenceRepository extends JpaRepository<LicenceEntity, Long> {
        OR LOWER(l.divingLincence) LIKE LOWER(CONCAT('%', :search, '%'))
        OR l.mobNumber LIKE CONCAT('%', :search, '%')
 """)
-    Page<LicenceEntity> licenceWithSearch(
-            @Param("search") String search,
-            Pageable pageable);
+    Page<LicenceEntity> licenceWithSearch(@Param("search") String search,Pageable pageable);
+
+    @Query("SELECT COUNT(l) FROM LicenceEntity l")
+    Integer getTotalNumberOfLincence();
+
 }

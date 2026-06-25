@@ -58,7 +58,8 @@ public class LicenceService {
             licence.setDueAmount(updatedLicence.getDueAmount());
             licence.setApplydate(updatedLicence.getApplydate());
             licence.setVehicleType(updatedLicence.getVehicleType());
-
+            licence.setPaidAmount(updatedLicence.getPaidAmount());
+            licence.setLicenceType(updatedLicence.getLicenceType());
             return licenceRepository.save(licence);
         }
         return null;
@@ -94,6 +95,9 @@ public class LicenceService {
     }
     public double totalDueAmount(){
      return   licenceRepository.getTotalDueAmount();
+    }
+    public Integer getTotalNumberOfLincence(){
+        return   licenceRepository.getTotalNumberOfLincence();
     }
     public List<LicenceDTO> getLicenceWithSearch(String search,Pageable pageable){
         Page<LicenceEntity> licenceWithSearch =licenceRepository.licenceWithSearch(search, pageable);

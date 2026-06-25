@@ -40,23 +40,29 @@
 
     <div class="menu-label" style="margin-top: 20px;">Services</div>
 
-    <a href="/licence/list" th:classappend="${activePage == 'licences'} ? 'active' : ''">
+    <a th:href="@{/licence/list}"
+       th:classappend="${activePage == 'licences'} ? 'active' : ''">
       <i class="fas fa-id-card"></i> Licence Services
       <span class="badge" th:text="${licenceCount}">0</span>
     </a>
-    <a href="vehicle-transfer/list" th:classappend="${activePage == 'transfer'} ? 'active' : ''">
+
+    <a th:href="@{/vehicle-transfer/list}"
+       th:classappend="${activePage == 'transfer'} ? 'active' : ''">
       <i class="fas fa-exchange-alt"></i> Vehicle Transfer
       <span class="badge" th:text="${transferCount}">0</span>
     </a>
-    <a href="insurance/dashboard" th:classappend="${activePage == 'insurance'} ? 'active' : ''">
+
+    <a th:href="@{/insurance/dashboard}"
+       th:classappend="${activePage == 'insurance'} ? 'active' : ''">
       <i class="fas fa-shield-alt"></i> Insurance
       <span class="badge" th:text="${insuranceCount}">0</span>
     </a>
-    <a href="#" th:classappend="${activePage == 'puc'} ? 'active' : ''">
+
+    <a th:href="@{/puc/dashboard}"
+       th:classappend="${activePage == 'puc'} ? 'active' : ''">
       <i class="fas fa-leaf"></i> PUC Services
       <span class="badge" th:text="${pucCount}">0</span>
     </a>
-
     <div class="menu-label" style="margin-top: 20px;">Management</div>
 
     <a href="#" th:classappend="${activePage == 'reports'} ? 'active' : ''">
